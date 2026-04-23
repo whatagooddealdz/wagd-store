@@ -1,6 +1,6 @@
 {
   "announcement": "🎮 New drops every Friday! Follow us on Instagram for flash deals & restocks.",
-  "instagramHandle": "myusername",
+  "instagramHandle": "whatagooddeal.dz",
   "games": [
     {
       "id": 1,
@@ -16,7 +16,7 @@
       "dealBadge": "DEAL OF THE WEEK",
       "isDealOfTheWeek": true,
       "checkoutMethod": "instagram",
-      "checkoutLink": "ig.me/m/myusername"
+      "checkoutLink": "ig.me/m/whatagooddeal.dz"
     },
     {
       "id": 2,
@@ -32,7 +32,7 @@
       "dealBadge": null,
       "isDealOfTheWeek": false,
       "checkoutMethod": "instagram",
-      "checkoutLink": "ig.me/m/myusername"
+      "checkoutLink": "ig.me/m/whatagooddeal.dz"
     },
     {
       "id": 4,
@@ -47,7 +47,7 @@
       "isDealOfTheWeek": false,
       "dealBadge": "NEW",
       "checkoutMethod": "instagram",
-      "checkoutLink": "ig.me/m/myusername",
+      "checkoutLink": "ig.me/m/whatagooddeal.dz",
       "stock": "In Stock"
     },
     {
