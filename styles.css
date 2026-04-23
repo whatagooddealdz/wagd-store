@@ -143,8 +143,8 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 }
 
 .site-logo {
-  height: 44px;        /* Controls logo height — adjust between 36px–52px to taste */
-  max-height: 44px;
+  height: 80px;        /* Controls logo height — adjust between 36px–52px to taste */
+  max-height: 80px;
   width: auto;         /* Keeps your logo's natural proportions, never stretches */
   object-fit: contain;
   display: block;
