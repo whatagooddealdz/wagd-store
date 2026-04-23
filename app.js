@@ -11,7 +11,7 @@ const state = {
   filtered:       [],
   activeFilter:   'All',
   searchQuery:    '',
-  instagramHandle: 'myusername',
+  instagramHandle: 'whatagooddeal.dz',
 };
 
 /* ── DOM refs ── */
@@ -94,7 +94,7 @@ function handleBuyNow(game) {
     showToast('📋 Opening order form… Fill in your CCP details & upload receipt.');
   } else {
     // Instagram DM
-    const handle = state.instagramHandle || 'myusername';
+    const handle = state.instagramHandle || 'whatagooddeal.dz';
     const igUrl = `https://ig.me/m/${handle}`;
     window.open(igUrl, '_blank', 'noopener,noreferrer');
     showToast(`💬 Opening Instagram DM… Message us to buy "${game.title}"!`);
