@@ -35,22 +35,6 @@
       "stock": "In Stock"
     },
     {
-      "id": 3,
-      "title": "God of War Ragnarök",
-      "description": "Embark on a mythic journey as Kratos and Atreus in the Norse realms. Face gods and monsters across all Nine Realms.",
-      "platform": "PlayStation",
-      "category": "PlayStation",
-      "region": "EU / MENA",
-      "price": 5500,
-      "originalPrice": 7000,
-      "image": "https://placehold.co/400x560/1a1a2e/00FF00?text=GoW+Ragnarok&font=oswald",
-      "isDealOfTheWeek": false,
-      "dealBadge": "HOT",
-      "checkoutMethod": "google_form",
-      "checkoutLink": "https://forms.google.com/your-form-link-here",
-      "stock": "In Stock"
-    },
-    {
       "id": 4,
       "title": "Hollow Knight: Silksong",
       "description": "Play as Hornet and venture to a vast new kingdom. Master new skills, hunt new beasts and discover ancient secrets.",
