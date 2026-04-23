@@ -113,22 +113,6 @@
       "checkoutMethod": "google_form",
       "checkoutLink": "https://forms.google.com/your-form-link-here",
       "stock": "In Stock"
-    },
-    {
-      "id": 8,
-      "title": "Hades II",
-      "description": "The sequel to the award-winning rogue-like. Play as Melinoë, the Princess of the Underworld, on a quest through Greek myth.",
-      "platform": "PC",
-      "category": "Indie",
-      "region": "Global",
-      "price": 2800,
-      "originalPrice": 3500,
-      "image": "https://placehold.co/400x560/1a1a2e/00FF00?text=Hades+II&font=oswald",
-      "isDealOfTheWeek": false,
-      "dealBadge": "SALE",
-      "checkoutMethod": "instagram",
-      "checkoutLink": "ig.me/m/myusername",
-      "stock": "In Stock"
     }
   ]
 }
