@@ -134,29 +134,24 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 }
 
 /* Logo */
-.logo {
-  font-family: var(--font-display);
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  line-height: 1;
-  color: var(--white);
+/* ── Image Logo ── */
+.logo-img-link {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-transform: uppercase;
-  white-space: nowrap;
+  align-items: center;
   flex-shrink: 0;
+  text-decoration: none;
 }
+
+.site-logo {
+  height: 44px;        /* Controls logo height — adjust between 36px–52px to taste */
+  max-height: 44px;
+  width: auto;         /* Keeps your logo's natural proportions, never stretches */
+  object-fit: contain;
+  display: block;
+}
+
+/* Also remove or comment out .logo-sub if it exists */
 .logo-accent { color: var(--neon); text-shadow: var(--shadow-neon); }
-.logo-sub {
-  font-size: 7px;
-  letter-spacing: 3px;
-  color: var(--text-muted);
-  font-family: var(--font-body);
-  font-weight: 400;
-  margin-top: -2px;
-}
 
 /* Search */
 .search-wrap {
@@ -955,11 +950,6 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   gap: 48px;
 }
 
-.footer-brand .logo {
-  font-size: 36px;
-  margin-bottom: 14px;
-  display: inline-flex;
-}
 .logo-accent-sm { color: var(--neon); }
 
 .footer-brand p {
