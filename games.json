@@ -81,22 +81,6 @@
       "checkoutMethod": "google_form",
       "checkoutLink": "https://forms.google.com/your-form-link-here",
       "stock": "Low Stock"
-    },
-    {
-      "id": 6,
-      "title": "Minecraft Java + Bedrock",
-      "description": "The ultimate edition. Build, survive, and explore in the world's best-selling game. Includes Java & Bedrock editions.",
-      "platform": "PC",
-      "category": "Steam",
-      "region": "Global",
-      "price": 3200,
-      "originalPrice": 3200,
-      "image": "https://placehold.co/400x560/1a1a2e/00FF00?text=Minecraft&font=oswald",
-      "isDealOfTheWeek": false,
-      "dealBadge": null,
-      "checkoutMethod": "instagram",
-      "checkoutLink": "ig.me/m/myusername",
-      "stock": "In Stock"
     }
   ]
 }
