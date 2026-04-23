@@ -21,7 +21,7 @@
     {
       "id": 2,
       "title": "Webbed",
-      "image": "C:\\Users\\DELMA AHMED YACINE\\Desktop\\wagd-store\\images\\header.jpg",
+      "image": "images/Webbed.jpg",
       "description": "Swing through the trees as a happy little spider! Physics-based web-slinging in a charming world full of bugs and wonder.",
       "platform": "Steam",
       "category": "Indie",
@@ -32,7 +32,7 @@
       "dealBadge": null,
       "isDealOfTheWeek": false,
       "checkoutMethod": "instagram",
-      "checkoutLink": "ig.me/m/whatagooddeal.dz"
+      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     },
     {
       "id": 4,
