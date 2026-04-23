@@ -97,22 +97,6 @@
       "checkoutMethod": "instagram",
       "checkoutLink": "ig.me/m/myusername",
       "stock": "In Stock"
-    },
-    {
-      "id": 7,
-      "title": "Spider-Man 2",
-      "description": "Swing through a bigger, more detailed New York as both Peter Parker and Miles Morales. Face the Symbiote threat.",
-      "platform": "PlayStation",
-      "category": "PlayStation",
-      "region": "EU / MENA",
-      "price": 7500,
-      "originalPrice": 9000,
-      "image": "https://placehold.co/400x560/1a1a2e/00FF00?text=Spider-Man+2&font=oswald",
-      "isDealOfTheWeek": false,
-      "dealBadge": null,
-      "checkoutMethod": "google_form",
-      "checkoutLink": "https://forms.google.com/your-form-link-here",
-      "stock": "In Stock"
     }
   ]
 }
