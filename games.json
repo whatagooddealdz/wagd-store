@@ -13,7 +13,7 @@
       "stock": "Low Stock",
       "price": 7500,
       "originalPrice": 9000,
-      "dealBadge": "DEAL OF THE WEEK",
+      "dealBadge": null,
       "isDealOfTheWeek": false,
       "checkoutMethod": "instagram",
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
