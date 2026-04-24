@@ -53,18 +53,18 @@
     {
       "id": 5,
       "title": "Elden Ring: Nightreign",
+      "image": "https://placehold.co/400x560/1a1a2e/00FF00?text=Elden+Ring&font=oswald",
       "description": "A standalone multiplayer experience set in the Elden Ring universe. Band together or fight alone in this roguelite action.",
       "platform": "Steam",
       "category": "Steam",
       "region": "Global",
+      "stock": "Low Stock",
       "price": 6000,
       "originalPrice": 8000,
-      "image": "https://placehold.co/400x560/1a1a2e/00FF00?text=Elden+Ring&font=oswald",
+      "dealBadge": "Coming soon",
       "isDealOfTheWeek": false,
-      "dealBadge": "NEW",
       "checkoutMethod": "google_form",
-      "checkoutLink": "https://forms.google.com/your-form-link-here",
-      "stock": "Low Stock"
+      "checkoutLink": "https://docs.google.com/forms/d/e/1FAIpQLSdnxsXRywNjYs-U3kHohZv5sJcFwfAfd6QKt14vrTr352J5Dw/viewform?usp=header"
     }
   ]
 }
