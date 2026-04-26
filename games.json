@@ -177,6 +177,22 @@
       "isDealOfTheWeek": false,
       "checkoutMethod": "instagram",
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
+    },
+    {
+      "id": 1777236973694,
+      "title": "HMA! Pro VPN Unlimited Devices 1 Year",
+      "image": "images/HMA! Pro VPN.jpg",
+      "description": "Works for Windows Only!",
+      "platform": "PC",
+      "category": "Steam",
+      "region": "Global",
+      "stock": "In Stock",
+      "price": 5500,
+      "originalPrice": 5500,
+      "dealBadge": "Unlimited Accounts!",
+      "isDealOfTheWeek": false,
+      "checkoutMethod": "instagram",
+      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     }
   ]
 }
