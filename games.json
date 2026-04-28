@@ -321,6 +321,22 @@
       "isDealOfTheWeek": false,
       "checkoutMethod": "instagram",
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
+    },
+    {
+      "id": 1777411553121,
+      "title": "The Crew Motorfest",
+      "image": "images/The Crew Motorfest.jpeg",
+      "description": "The Crew Motorfest is an open-world online racing game set on the island of Oahu, Hawaii. Experience the best of car culture by participating in intense races, taking part in themed events, and collecting hundreds of cars.",
+      "platform": "Ubisoft Connect",
+      "category": "PC",
+      "region": "REW (Works for DZ)",
+      "stock": "In Stock",
+      "price": 3900,
+      "originalPrice": 3900,
+      "dealBadge": "Racing",
+      "isDealOfTheWeek": false,
+      "checkoutMethod": "instagram",
+      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     }
   ]
 }
