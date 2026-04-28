@@ -337,6 +337,22 @@
       "isDealOfTheWeek": false,
       "checkoutMethod": "instagram",
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
+    },
+    {
+      "id": 1777412435631,
+      "title": "Skull and Bones",
+      "image": "images/Skull and Bones.jpg",
+      "description": "Region Europe",
+      "platform": "Ubisoft Connect",
+      "category": "PC",
+      "region": "Europe",
+      "stock": "In Stock",
+      "price": 4300,
+      "originalPrice": 4300,
+      "dealBadge": null,
+      "isDealOfTheWeek": false,
+      "checkoutMethod": "instagram",
+      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     }
   ]
 }
