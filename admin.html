@@ -768,6 +768,25 @@
     }
     .detail-fields-wrap.open { display: contents; }
 
+    /* ── Drag and Drop ── */
+    .drag-handle {
+      font-size: 18px;
+      color: var(--text-dim);
+      cursor: grab;
+      padding: 0 4px;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .drag-handle:active { cursor: grabbing; }
+    .game-row.dragging {
+      opacity: 0.4;
+      border-color: var(--neon);
+    }
+    .game-row.drag-over {
+      border-color: var(--neon);
+      background: var(--neon-dim);
+    }
+
     /* ── Animations ── */ 
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(8px); }
@@ -906,16 +925,16 @@
           </div>
 
          <div class="field-group span-2">
-            <label>Cover Image <span class="required">*</span></label>
+            <label>Game Images <span class="required">*</span> <span style="color:var(--text-dim);font-weight:400;text-transform:none">(first = cover; add more for slider)</span></label>
             <div class="imgbb-upload-wrap">
               <label class="upload-label" for="f-image-file">
-                📁 Click to select image file
+                📁 Click to select one or more images
               </label>
-              <input type="file" id="f-image-file" accept="image/*" style="display:none" onchange="handleImageUpload(this)" />
-              <img class="upload-preview" id="upload-preview" alt="Preview" />
+              <input type="file" id="f-image-file" accept="image/*" multiple style="display:none" onchange="handleImageUpload(this)" />
+              <div id="upload-preview-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;"></div>
               <span class="upload-status" id="upload-status"></span>
-              <!-- Hidden field stores the final URL written to JSON -->
-              <input type="hidden" id="f-image" />
+              <!-- Hidden field stores JSON array of uploaded URLs -->
+              <input type="hidden" id="f-images" />
             </div>
           </div>
 
@@ -941,6 +960,7 @@
               <option value="Xbox">Xbox</option>
               <option value="Mac">Mac</option>
               <option value="Mobile">Mobile</option>
+              <option value="Software">Software</option>
             </select>
           </div>
 
@@ -1437,43 +1457,59 @@ function setDotwUI(value) {
 const IMGBB_API_KEY = 'YOUR_IMGBB_API_KEY_HERE';
 
 async function handleImageUpload(input) {
-  const file = input.files[0];
-  if (!file) return;
+  const files   = Array.from(input.files);
+  if (!files.length) return;
 
-  const status  = document.getElementById('upload-status');
-  const preview = document.getElementById('upload-preview');
-  const hidden  = document.getElementById('f-image');
+  const status      = document.getElementById('upload-status');
+  const previewList = document.getElementById('upload-preview-list');
+  const hidden      = document.getElementById('f-images');
 
-  status.textContent = '⏳ Uploading…';
+  status.textContent = `⏳ Uploading ${files.length} image(s)…`;
   status.className   = 'upload-status';
 
-  // Show local preview instantly
-  preview.src = URL.createObjectURL(file);
-  preview.classList.add('visible');
+  // Parse any already-uploaded URLs so we append, not replace
+  let existingUrls = [];
+  try { existingUrls = JSON.parse(hidden.value || '[]'); } catch { existingUrls = []; }
 
-  const formData = new FormData();
-  formData.append('image', file);
+  const newUrls = [];
+  let failCount = 0;
 
-  try {
-    const res  = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-      method: 'POST',
-      body: formData,
-    });
-    const json = await res.json();
-    if (!json.success) throw new Error(json.error?.message || 'Upload failed');
+  for (const file of files) {
+    // Instant local preview while uploading
+    const localSrc = URL.createObjectURL(file);
+    const thumb = document.createElement('img');
+    thumb.src   = localSrc;
+    thumb.style.cssText = 'width:48px;height:64px;object-fit:cover;border-radius:4px;border:1px solid var(--border);opacity:0.5;';
+    previewList.appendChild(thumb);
 
-    const url = json.data.url;
-    hidden.value      = url;
-    status.textContent = '✅ Uploaded! URL saved.';
-    status.className   = 'upload-status ok';
-    preview.src        = url;
-  } catch (e) {
-    status.textContent = '❌ Upload failed: ' + e.message;
-    status.className   = 'upload-status err';
-    hidden.value       = '';
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res  = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+        method: 'POST',
+        body: formData,
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error?.message || 'Upload failed');
+      const url   = json.data.url;
+      newUrls.push(url);
+      thumb.src           = url;
+      thumb.style.opacity = '1';
+    } catch (e) {
+      failCount++;
+      thumb.style.border  = '1px solid var(--danger)';
+      thumb.style.opacity = '1';
+    }
   }
-}
 
+  const allUrls  = [...existingUrls, ...newUrls];
+  hidden.value   = JSON.stringify(allUrls);
+  const okCount  = newUrls.length;
+  status.textContent = failCount
+    ? `⚠️ ${okCount} uploaded, ${failCount} failed.`
+    : `✅ ${okCount} image(s) uploaded. ${allUrls.length} total.`;
+  status.className = failCount ? 'upload-status err' : 'upload-status ok';
+}
 /* ── Out of Stock toggle ── */
 function toggleOutOfStock() {
   const inp    = document.getElementById('f-oos');
@@ -1525,7 +1561,7 @@ function toggleDetailFields() {
 }
 
 function clearForm() {
-  ['f-title','f-image','f-price','f-original-price','f-platform','f-region','f-badge','f-description',
+  ['f-title','f-images','f-price','f-original-price','f-platform','f-region','f-badge','f-description',
    'f-working-regions','f-genres','f-release-date','f-developer','f-publisher',
    'f-audio-langs','f-text-langs','f-pc-features','f-game-modes'].forEach(id => {
     const el = document.getElementById(id);
@@ -1538,13 +1574,13 @@ function clearForm() {
   setDotwUI(false);
   setOosUI(false);
   setHighlightRegionUI(false);
-  // Reset upload UI
-  const preview = document.getElementById('upload-preview');
-  const status  = document.getElementById('upload-status');
-  const fileInput = document.getElementById('f-image-file');
-  if (preview) { preview.src = ''; preview.classList.remove('visible'); }
-  if (status)  { status.textContent = ''; status.className = 'upload-status'; }
-  if (fileInput) fileInput.value = '';
+  // Reset multi-image upload UI
+  const previewList = document.getElementById('upload-preview-list');
+  const status      = document.getElementById('upload-status');
+  const fileInput   = document.getElementById('f-image-file');
+  if (previewList) previewList.innerHTML = '';
+  if (status)      { status.textContent = ''; status.className = 'upload-status'; }
+  if (fileInput)   fileInput.value = '';
   // Close detail panel
   document.getElementById('detail-toggle')?.classList.remove('open');
   document.getElementById('detail-fields-wrap')?.classList.remove('open');
@@ -1569,7 +1605,10 @@ function cancelEdit() {
 
 async function submitGameForm() {
   const title      = document.getElementById('f-title').value.trim();
-  const image      = document.getElementById('f-image').value.trim();
+  // Read the JSON array of uploaded image URLs
+  let imagesArr = [];
+  try { imagesArr = JSON.parse(document.getElementById('f-images').value || '[]'); } catch { imagesArr = []; }
+  const image = imagesArr[0] || ''; // first image kept as legacy `image` field for compatibility
   const price      = parseFloat(document.getElementById('f-price').value);
   const origPrice  = parseFloat(document.getElementById('f-original-price').value) || price;
   const platform   = document.getElementById('f-platform').value.trim();
@@ -1616,7 +1655,10 @@ async function submitGameForm() {
 
   const gameObj = {
     id:              editId ? parseInt(editId) : Date.now(),
-    title, image, description: desc,
+    title,
+    image,          // legacy single-image field (first image) — keeps DOTW section working
+    images: imagesArr, // full array for modal slider
+    description: desc,
     platform, category, region, stock,
     price:           price,
     originalPrice:   origPrice,
@@ -1690,15 +1732,26 @@ function startEdit(id) {
   document.getElementById('f-pc-features').value     = game.pcFeatures     || '';
   document.getElementById('f-game-modes').value      = game.gameModes      || '';
 
-  // Show current image in preview
-  const preview = document.getElementById('upload-preview');
-  const status  = document.getElementById('upload-status');
-  if (game.image) {
-    preview.src = game.image;
-    preview.classList.add('visible');
-    status.textContent = '✅ Current image loaded.';
-    status.className   = 'upload-status ok';
-    document.getElementById('f-image').value = game.image;
+  // Populate multi-image previews from saved images array
+  const imagesForEdit  = Array.isArray(game.images) && game.images.length
+    ? game.images
+    : (game.image ? [game.image] : []);
+  const fImages        = document.getElementById('f-images');
+  const previewList    = document.getElementById('upload-preview-list');
+  const editStatus     = document.getElementById('upload-status');
+  if (fImages)      fImages.value = JSON.stringify(imagesForEdit);
+  if (previewList) {
+    previewList.innerHTML = '';
+    imagesForEdit.forEach(url => {
+      const thumb = document.createElement('img');
+      thumb.src   = url;
+      thumb.style.cssText = 'width:48px;height:64px;object-fit:cover;border-radius:4px;border:1px solid var(--border);';
+      previewList.appendChild(thumb);
+    });
+  }
+  if (editStatus && imagesForEdit.length) {
+    editStatus.textContent = `✅ ${imagesForEdit.length} image(s) loaded.`;
+    editStatus.className   = 'upload-status ok';
   }
 
   // Selects
@@ -1759,23 +1812,51 @@ async function deleteGame(id) {
 }
 
 /* ============================================================
-   REORDER GAMES
+   DRAG-AND-DROP REORDER
    ============================================================ */
-async function moveGame(id, direction) {
-  const games = gameData.games;
-  const idx   = games.findIndex(g => String(g.id) === String(id));
-  if (idx < 0) return;
-  const newIdx = idx + direction;
-  if (newIdx < 0 || newIdx >= games.length) return;
+let dragSrcId = null;
 
-  // Swap
-  [games[idx], games[newIdx]] = [games[newIdx], games[idx]];
+function initDragAndDrop() {
+  const list = document.querySelector('.game-list');
+  if (!list) return;
 
-  const ok = await saveData(`chore: reorder games`);
-  if (ok) {
-    renderGameList();
-    toast('Order updated.', 'success', 2000);
-  }
+  list.querySelectorAll('.game-row[draggable]').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      dragSrcId = row.dataset.id;
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      list.querySelectorAll('.game-row').forEach(r => r.classList.remove('drag-over'));
+    });
+    row.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      list.querySelectorAll('.game-row').forEach(r => r.classList.remove('drag-over'));
+      row.classList.add('drag-over');
+    });
+    row.addEventListener('drop', async e => {
+      e.preventDefault();
+      const targetId = row.dataset.id;
+      if (!dragSrcId || dragSrcId === targetId) return;
+
+      const games   = gameData.games;
+      const fromIdx = games.findIndex(g => String(g.id) === dragSrcId);
+      const toIdx   = games.findIndex(g => String(g.id) === targetId);
+      if (fromIdx < 0 || toIdx < 0) return;
+
+      // Reorder array
+      const [moved] = games.splice(fromIdx, 1);
+      games.splice(toIdx, 0, moved);
+
+      renderGameList();   // optimistic UI update
+      initDragAndDrop();  // re-bind events after re-render
+
+      const ok = await saveData('chore: reorder games');
+      if (ok) toast('Order saved.', 'success', 2000);
+    });
+  });
 }
 
 /* ============================================================
@@ -1812,7 +1893,7 @@ function renderGameList() {
       : null;
 
     return `
-      <div class="game-row ${g.isDealOfTheWeek ? 'dotw' : ''}" style="animation-delay:${i * 0.04}s">
+      <div class="game-row ${g.isDealOfTheWeek ? 'dotw' : ''}" draggable="true" data-id="${g.id}" style="animation-delay:${i * 0.04}s">
         <img class="game-row-img" src="${esc(g.image)}" alt="${esc(g.title)}" onerror="this.src='https://placehold.co/40x56/1a1a1a/444?text=?'" />
         <div class="game-row-info">
           <div class="game-row-title">${esc(g.title)}</div>
@@ -1825,8 +1906,7 @@ function renderGameList() {
           </div>
         </div>
         <div class="game-row-actions">
-          <button class="btn btn-secondary btn-sm btn-icon" title="Move Up" onclick="moveGame(${g.id}, -1)" ${i === 0 ? 'disabled' : ''}>↑</button>
-          <button class="btn btn-secondary btn-sm btn-icon" title="Move Down" onclick="moveGame(${g.id}, 1)" ${i === games.length - 1 ? 'disabled' : ''}>↓</button>
+          <span class="drag-handle" title="Drag to reorder">⠿</span>
           <button class="btn btn-secondary btn-sm btn-icon" title="Edit" onclick="startEdit(${g.id})">✏️</button>
           <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="deleteGame(${g.id})">🗑️</button>
         </div>
@@ -1835,6 +1915,7 @@ function renderGameList() {
   }).join('');
 
   wrap.innerHTML = `<div class="game-list">${html}</div>`;
+  initDragAndDrop();
 }
 
 /* ============================================================
