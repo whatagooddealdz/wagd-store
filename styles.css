@@ -134,24 +134,29 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 }
 
 /* Logo */
-/* ── Image Logo ── */
-.logo-img-link {
+.logo {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1;
+  color: var(--white);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  text-transform: uppercase;
+  white-space: nowrap;
   flex-shrink: 0;
-  text-decoration: none;
 }
-
-.site-logo {
-  height: 80px;        /* Controls logo height — adjust between 36px–52px to taste */
-  max-height: 80px;
-  width: auto;         /* Keeps your logo's natural proportions, never stretches */
-  object-fit: contain;
-  display: block;
-}
-
-/* Also remove or comment out .logo-sub if it exists */
 .logo-accent { color: var(--neon); text-shadow: var(--shadow-neon); }
+.logo-sub {
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-weight: 400;
+  margin-top: -2px;
+}
 
 /* Search */
 .search-wrap {
@@ -522,6 +527,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   overflow: hidden;
   box-shadow: var(--shadow-card);
   transition: border-color var(--transition);
+  cursor: pointer;
 }
 .dotw-card:hover { border-color: rgba(0,255,0,0.3); }
 
@@ -741,22 +747,6 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   font-weight: 700;
 }
 
-/* Genre filter row — slightly smaller pills */
-.filters-genre .filter-btn {
-  font-size: 12px;
-  padding: 5px 14px;
-  border-radius: 100px;
-  border-color: rgba(0,255,0,0.15);
-  color: var(--text-dim);
-}
-.filters-genre .filter-btn:hover { color: var(--neon); border-color: var(--neon); }
-.filters-genre .filter-btn.active {
-  background: var(--neon-dim);
-  color: var(--neon);
-  border-color: var(--neon);
-  font-weight: 600;
-}
-
 .results-count {
   font-size: 13px;
   color: var(--text-dim);
@@ -799,6 +789,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   position: relative;
   transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
   animation: fadeIn 0.4s ease both;
+  cursor: pointer;
 }
 .game-card:hover {
   border-color: rgba(0,255,0,0.3);
@@ -823,34 +814,6 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 .game-card:hover .card-img-wrap img { transform: scale(1.06); }
 
 /* Badge */
-/* ── Out of Stock card state ── */
-.game-card.out-of-stock .card-img-wrap img {
-  filter: grayscale(100%);
-  opacity: 0.6;
-}
-.game-card.out-of-stock .btn-buy {
-  opacity: 0.35;
-  cursor: not-allowed;
-  /* pointer-events left ON so the card click (for modal) still works;
-     the button is disabled via the HTML `disabled` attribute */
-}
-.badge-oos {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: rgba(220, 20, 20, 0.88);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 5px 0;
-  z-index: 3;
-}
-
-
-/* ── Region highlight — see .tag-region-highlight below for full styles ── */
-
 .card-badge {
   position: absolute;
   top: 10px; right: 10px;
@@ -919,17 +882,6 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   background: rgba(136,136,136,0.1);
   color: var(--text-muted);
   border: 1px solid var(--bg-border);
-}
-@keyframes region-pulse {
-  0%, 100% { box-shadow: 0 0 4px rgba(0, 229, 255, 0.5), 0 0 8px rgba(0, 229, 255, 0.25); }
-  50%       { box-shadow: 0 0 8px rgba(0, 229, 255, 0.9), 0 0 16px rgba(0, 229, 255, 0.5); }
-}
-.tag-region-highlight {
-  background: rgba(0, 229, 255, 0.12);
-  color: #00e5ff;
-  border: 1px solid rgba(0, 229, 255, 0.6);
-  animation: region-pulse 2s ease-in-out infinite;
-  font-weight: 700;
 }
 .tag-stock-low {
   background: rgba(255,170,0,0.1);
@@ -1005,6 +957,11 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   gap: 48px;
 }
 
+.footer-brand .logo {
+  font-size: 36px;
+  margin-bottom: 14px;
+  display: inline-flex;
+}
 .logo-accent-sm { color: var(--neon); }
 
 .footer-brand p {
@@ -1135,437 +1092,185 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 
 
 /* ============================================================
-   GAME DETAIL MODAL
+   NEW FEATURES ADDITIONS (Region Highlight + Modal)
    ============================================================ */
-.modal-overlay {
+
+/* ── Neon Cyan Pulsing Glow for Highlighted Region ── */
+@keyframes pulseCyan {
+  0%   { box-shadow: 0 0 4px rgba(0, 255, 255, 0.4); border-color: rgba(0, 255, 255, 0.6); color: #00ffff; }
+  50%  { box-shadow: 0 0 16px rgba(0, 255, 255, 0.9); border-color: #00ffff; color: #fff; }
+  100% { box-shadow: 0 0 4px rgba(0, 255, 255, 0.4); border-color: rgba(0, 255, 255, 0.6); color: #00ffff; }
+}
+.tag-region-highlight {
+  background: rgba(0, 255, 255, 0.1) !important;
+  border: 1px solid #00ffff !important;
+  color: #00ffff !important;
+  animation: pulseCyan 2s infinite ease-in-out;
+}
+
+/* ── Modal Layout ── */
+.modal {
   position: fixed;
   inset: 0;
-  z-index: 800;
-  background: rgba(0,0,0,0);
-  transition: background 0.3s ease;
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-end;
-}
-.modal-overlay:not([hidden]) { background: rgba(0,0,0,0.65); }
-
-.modal-panel {
-  width: min(680px, 100vw);
-  height: 100%;
-  background: #111;
-  border-left: 1px solid var(--bg-border);
-  overflow-y: auto;
-  position: relative;
-  transform: translateX(100%);
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-}
-.modal-overlay.open .modal-panel { transform: translateX(0); }
-
-.modal-close {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  z-index: 2000;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 14px 16px;
-  background: rgba(17,17,17,0.9);
-  border: none;
-  color: var(--text-muted);
-  font-size: 18px;
-  cursor: pointer;
-  width: 100%;
-  transition: color var(--transition);
+  justify-content: center;
+  padding: 24px;
 }
-.modal-close:hover { color: var(--neon); }
-
-.modal-inner {
-  display: flex;
-  gap: 28px;
-  padding: 0 24px 40px;
-  flex: 1;
+.modal[hidden] {
+  display: none !important;
 }
-
-.modal-img-col {
-  width: 200px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.modal-cover {
-  width: 100%;
-  aspect-ratio: 3/4;
-  object-fit: cover;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--bg-border);
-}
-.modal-pricing {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.modal-price-current {
-  font-family: var(--font-display);
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--neon);
-  text-shadow: var(--shadow-neon);
-  line-height: 1;
-}
-.modal-price-original {
-  font-size: 14px;
-  color: var(--text-dim);
-  text-decoration: line-through;
-}
-.modal-price-save {
-  font-size: 12px;
-  font-weight: 700;
-  color: #ff6b6b;
-}
-.modal-buy-btn { width: 100%; }
-
-.modal-info-col { flex: 1; min-width: 0; padding-top: 4px; }
-.modal-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.modal-title {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 4vw, 42px);
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--white);
-  line-height: 1.05;
-  margin-bottom: 12px;
-}
-.modal-desc {
-  font-size: 14px;
-  color: var(--text-muted);
-  line-height: 1.75;
-  margin-bottom: 16px;
-}
-.modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
-
-/* Accordion */
-.accordion { display: flex; flex-direction: column; gap: 2px; }
-.accordion-item { border: 1px solid var(--bg-border); border-radius: var(--radius); overflow: hidden; }
-.accordion-trigger {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--bg-elevated);
-  border: none;
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background var(--transition), color var(--transition);
-}
-.accordion-trigger:hover { background: var(--bg-border); color: var(--neon); }
-.accordion-trigger .acc-arrow {
-  font-size: 11px;
-  color: var(--text-dim);
-  transition: transform 0.25s ease;
-}
-.accordion-item.open .acc-arrow { transform: rotate(90deg); }
-.accordion-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  background: var(--bg-card);
-}
-.accordion-item.open .accordion-body { max-height: 400px; }
-.accordion-content {
-  padding: 14px 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.acc-pill {
-  font-size: 12px;
-  color: var(--text-muted);
-  background: var(--bg-elevated);
-  border: 1px solid var(--bg-border);
-  border-radius: 100px;
-  padding: 3px 10px;
-}
-.acc-row {
-  width: 100%;
-  font-size: 13px;
-  color: var(--text-muted);
-  display: flex;
-  gap: 8px;
-}
-.acc-row strong { color: var(--text); min-width: 90px; display: inline-block; }
-
-/* Modal responsive */
-@media (max-width: 600px) {
-  .modal-panel { width: 100vw; border-left: none; }
-  .modal-inner { flex-direction: column; padding: 0 16px 32px; }
-  .modal-img-col { width: 100%; flex-direction: row; align-items: flex-start; gap: 16px; }
-  .modal-cover { width: 120px; }
-  .modal-pricing { flex-direction: row; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-}
-
-/* ── Out of Stock badge on card image ── */
-.badge-oos {
+.modal-backdrop {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: rgba(210, 20, 20, 0.88);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 5px 0;
-  z-index: 3;
-}
-.game-card.out-of-stock .card-img-wrap img {
-  filter: grayscale(100%);
-  opacity: 0.6;
-}
-
-/* ── Modal overlay ── */
-.modal-overlay {
-  position: fixed;
   inset: 0;
-  z-index: 800;
-  background: rgba(0, 0, 0, 0);
-  transition: background 0.3s ease;
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-end;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
 }
-.modal-overlay:not([hidden]) { background: rgba(0, 0, 0, 0.65); }
-
-.modal-panel {
-  width: min(680px, 100vw);
-  height: 100%;
-  background: #111;
-  border-left: 1px solid var(--bg-border);
-  overflow-y: auto;
+.modal-content {
   position: relative;
-  transform: translateX(100%);
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,255,0,0.15);
+  z-index: 1;
+  animation: fadeIn 0.3s ease;
 }
-.modal-overlay.open .modal-panel { transform: translateX(0); }
-
 .modal-close {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 32px; height: 32px;
+  background: rgba(0,0,0,0.5);
+  color: var(--text);
+  border: 1px solid var(--bg-border);
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 14px 16px;
-  background: rgba(17, 17, 17, 0.92);
-  border: none;
-  color: var(--text-muted);
-  font-size: 20px;
-  cursor: pointer;
-  width: 100%;
-  transition: color var(--transition);
+  justify-content: center;
+  font-size: 14px;
+  z-index: 10;
+  transition: all var(--transition);
 }
-.modal-close:hover { color: var(--neon); }
-
-.modal-inner {
+.modal-close:hover {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+.modal-body {
   display: flex;
-  gap: 28px;
-  padding: 4px 24px 48px;
-  flex: 1;
+  flex-direction: row;
 }
 
-/* ── Modal left column ── */
-.modal-img-col {
-  width: 200px;
+/* Modal Slider */
+.modal-gallery {
+  position: relative;
+  width: 350px;
+  background: #000;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
 }
-
-/* ── Image Slider ── */
-.modal-slider {
+.modal-gallery img {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.modal-slide-img {
-  width: 100%;
-  aspect-ratio: 3 / 4;
+  height: 100%;
   object-fit: cover;
-  border-radius: var(--radius-lg);
+  aspect-ratio: 5/7;
+}
+.modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.6);
   border: 1px solid var(--bg-border);
-  display: block;
-}
-.slider-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-.slider-btn {
-  background: var(--bg-elevated);
-  border: 1px solid var(--bg-border);
-  color: var(--text);
-  width: 28px; height: 28px;
+  color: var(--white);
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
   border-radius: 50%;
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-color var(--transition), color var(--transition);
+  transition: all var(--transition);
 }
-.slider-btn:hover { border-color: var(--neon); color: var(--neon); }
-.slider-counter {
-  font-size: 12px;
-  color: var(--text-muted);
-  min-width: 36px;
-  text-align: center;
-}
-.slider-dots {
+.modal-nav:hover { background: var(--neon); color: #000; border-color: var(--neon); }
+.modal-nav.prev { left: 10px; }
+.modal-nav.next { right: 10px; }
+.modal-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 0; right: 0;
   display: flex;
   justify-content: center;
-  gap: 5px;
+  gap: 8px;
+  z-index: 2;
 }
-.slider-dot {
-  width: 7px; height: 7px;
+.modal-dots .dot {
+  width: 8px; height: 8px;
+  background: rgba(255,255,255,0.3);
   border-radius: 50%;
-  background: var(--bg-border);
-  border: none;
   cursor: pointer;
-  transition: background var(--transition);
+  transition: background var(--transition), transform var(--transition);
 }
-.slider-dot.active { background: var(--neon); }
+.modal-dots .dot.active {
+  background: var(--neon);
+  box-shadow: 0 0 8px var(--neon);
+  transform: scale(1.3);
+}
 
-/* ── Modal pricing ── */
-.modal-pricing {
+/* Modal Info */
+.modal-info {
+  padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  flex: 1;
 }
-.modal-price-current {
+.modal-info h2 {
   font-family: var(--font-display);
-  font-size: 30px;
-  font-weight: 700;
-  color: var(--neon);
-  text-shadow: var(--shadow-neon);
+  font-size: 40px;
   line-height: 1;
-}
-.modal-price-original {
-  font-size: 14px;
-  color: var(--text-dim);
-  text-decoration: line-through;
-}
-.modal-price-save {
-  font-size: 12px;
-  font-weight: 700;
-  color: #ff6b6b;
-}
-.modal-buy-btn { width: 100%; }
-
-/* ── Modal right column ── */
-.modal-info-col { flex: 1; min-width: 0; padding-top: 4px; }
-.modal-badges   { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.modal-title {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 4vw, 42px);
-  font-weight: 700;
   text-transform: uppercase;
   color: var(--white);
-  line-height: 1.05;
   margin-bottom: 12px;
 }
 .modal-desc {
   font-size: 14px;
   color: var(--text-muted);
-  line-height: 1.75;
-  margin-bottom: 16px;
+  line-height: 1.7;
+  margin: 16px 0 24px;
 }
-.modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
-
-/* ── Accordion ── */
-.accordion { display: flex; flex-direction: column; gap: 2px; }
-.accordion-item {
-  border: 1px solid var(--bg-border);
+.modal-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+  background: var(--bg-elevated);
+  padding: 16px;
   border-radius: var(--radius);
-  overflow: hidden;
+  border: 1px solid var(--bg-border);
 }
-.accordion-trigger {
-  width: 100%;
+.modal-details strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.modal-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--bg-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--bg-elevated);
-  border: none;
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background var(--transition), color var(--transition);
+  gap: 20px;
 }
-.accordion-trigger:hover { background: var(--bg-border); color: var(--neon); }
-.accordion-trigger .acc-arrow {
-  font-size: 11px;
-  color: var(--text-dim);
-  transition: transform 0.25s ease;
-}
-.accordion-item.open .acc-arrow { transform: rotate(90deg); }
-.accordion-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  background: var(--bg-card);
-}
-.accordion-item.open .accordion-body { max-height: 400px; }
-.accordion-content {
-  padding: 14px 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.acc-pill {
-  font-size: 12px;
-  color: var(--text-muted);
-  background: var(--bg-elevated);
-  border: 1px solid var(--bg-border);
-  border-radius: 100px;
-  padding: 3px 10px;
-}
-.acc-row {
-  width: 100%;
-  font-size: 13px;
-  color: var(--text-muted);
-  display: flex;
-  gap: 8px;
-}
-.acc-row strong {
-  color: var(--text);
-  min-width: 90px;
-  display: inline-block;
-  flex-shrink: 0;
-}
+.modal-footer .btn-buy { width: auto; padding: 12px 32px; }
 
-/* ── Modal responsive ── */
-@media (max-width: 600px) {
-  .modal-panel  { width: 100vw; border-left: none; }
-  .modal-inner  { flex-direction: column; padding: 0 16px 36px; }
-  .modal-img-col { width: 100%; flex-direction: row; align-items: flex-start; gap: 16px; }
-  .modal-slide-img { width: 130px; aspect-ratio: 3/4; }
-  .modal-pricing { flex-direction: row; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+@media (max-width: 768px) {
+  .modal-body { flex-direction: column; }
+  .modal-gallery { width: 100%; aspect-ratio: 16/9; }
+  .modal-gallery img { aspect-ratio: 16/9; }
+  .modal-info { padding: 24px; }
+  .modal-details { grid-template-columns: 1fr; }
+  .modal-footer { flex-direction: column; align-items: stretch; }
+  .modal-footer .card-pricing { justify-content: center; margin-bottom: 16px; }
 }

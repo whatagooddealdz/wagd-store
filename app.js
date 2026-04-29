@@ -7,13 +7,11 @@
 
 /* ── State ── */
 const state = {
-  games:           [],
-  filtered:        [],
-  activePlatform:  'All',
-  activeGenre:     'All',
-  searchQuery:     '',
+  games:          [],
+  filtered:       [],
+  activeFilter:   'All',
+  searchQuery:    '',
   instagramHandle: 'myusername',
-  modalGame:       null,
 };
 
 /* ── DOM refs ── */
@@ -35,11 +33,9 @@ const DOM = {
   searchInput:      $('search-input'),
   searchClear:      $('search-clear'),
   filterBtns:       $$('.filter-btn'),
-  filtersGenre:     $('filters-genre'),
   hamburger:        $('hamburger'),
   mobileNav:        $('mobile-nav'),
   toast:            $('toast'),
-  modalOverlay:     $('modal-overlay'),
 };
 
 /* ── Helpers ── */
@@ -71,19 +67,15 @@ function showToast(msg, duration = 3500) {
 
 /* ── Announcement Bar ── */
 function initAnnouncement(text) {
-  if (DOM.announcementText) DOM.announcementText.textContent = text;
-  
+  DOM.announcementText.textContent = text;
   const dismissed = sessionStorage.getItem('wagd_announce_dismissed');
-  if (dismissed && DOM.announcementBar) {
+  if (dismissed) {
     DOM.announcementBar.classList.add('dismissed');
   }
-  
-  if (DOM.dismissBtn) { // 🛡️ SAFETY CHECK
-    DOM.dismissBtn.addEventListener('click', () => {
-      if (DOM.announcementBar) DOM.announcementBar.classList.add('dismissed');
-      sessionStorage.setItem('wagd_announce_dismissed', '1');
-    });
-  }
+  DOM.dismissBtn.addEventListener('click', () => {
+    DOM.announcementBar.classList.add('dismissed');
+    sessionStorage.setItem('wagd_announce_dismissed', '1');
+  });
 }
 
 /* ── Instagram links ── */
@@ -102,7 +94,7 @@ function handleBuyNow(game) {
     showToast('📋 Opening order form… Fill in your CCP details & upload receipt.');
   } else {
     // Instagram DM
-    const handle = state.instagramHandle || 'whatagooddeal.dz';
+    const handle = state.instagramHandle || 'myusername';
     const igUrl = `https://ig.me/m/${handle}`;
     window.open(igUrl, '_blank', 'noopener,noreferrer');
     showToast(`💬 Opening Instagram DM… Message us to buy "${game.title}"!`);
@@ -141,21 +133,29 @@ function renderDotw(game) {
     </div>
   `;
 
-  DOM.dotwCard.querySelector('.btn-buy').addEventListener('click', () => handleBuyNow(game));
+  // Attach modal click to card
+  DOM.dotwCard.addEventListener('click', () => Modal.open(game));
+
+  // Ensure button doesn't trigger modal
+  DOM.dotwCard.querySelector('.btn-buy').addEventListener('click', (e) => {
+    e.stopPropagation();
+    handleBuyNow(game);
+  });
 }
 
 /* ── Render: Tags ── */
 function renderTags(game) {
-  const stockTag    = game.stock === 'Low Stock'
+  const stockTag = game.stock === 'Low Stock' || game.stock === 'Low'
     ? `<span class="tag tag-stock-low">⚡ Low Stock</span>`
     : '';
-  const regionClass = game.highlightRegion
-    ? 'tag tag-region tag-region-highlight'
-    : 'tag tag-region';
+  
+  // Assign pulsing cyan class if highlightRegion is checked
+  const regionClasses = game.highlightRegion ? 'tag tag-region tag-region-highlight' : 'tag tag-region';
+
   return `
     <div class="card-tags">
       ${game.platform ? `<span class="tag tag-platform">${escHtml(game.platform)}</span>` : ''}
-      ${game.region   ? `<span class="${regionClass}">🌍 ${escHtml(game.region)}</span>` : ''}
+      ${game.region   ? `<span class="${regionClasses}">🌍 ${escHtml(game.region)}</span>` : ''}
       ${stockTag}
     </div>
   `;
@@ -163,26 +163,19 @@ function renderTags(game) {
 
 /* ── Render: Game Card ── */
 function renderCard(game) {
-  const discount   = calcDiscount(game.originalPrice, game.price);
-  const badge      = game.dealBadge;
-  const bClass     = badgeClass(badge);
-  const oos        = !!game.isOutOfStock;
-  // Support both single image string and images array — first image is cover
-  const coverImg   = Array.isArray(game.images) && game.images.length
-    ? game.images[0]
-    : (game.image || '');
+  const discount = calcDiscount(game.originalPrice, game.price);
+  const badge = game.dealBadge;
+  const bClass = badgeClass(badge);
 
   const card = document.createElement('article');
-  card.className = `game-card${oos ? ' out-of-stock' : ''}`;
+  card.className = 'game-card';
   card.setAttribute('aria-label', game.title);
   card.style.animationDelay = `${Math.random() * 0.15}s`;
-  card.style.cursor = 'pointer';
 
   card.innerHTML = `
     <div class="card-img-wrap">
-      <img src="${escHtml(coverImg)}" alt="${escHtml(game.title)} game cover" loading="lazy" />
+      <img src="${game.image}" alt="${escHtml(game.title)} game cover" loading="lazy" />
       ${badge ? `<span class="card-badge ${bClass}">${escHtml(badge)}</span>` : ''}
-      ${oos    ? `<div class="badge-oos">Out of Stock</div>` : ''}
     </div>
     <div class="card-body">
       <h3 class="card-title">${escHtml(game.title)}</h3>
@@ -195,21 +188,19 @@ function renderCard(game) {
              <span class="price-discount">-${discount}%</span>`
           : ''}
       </div>
-      <button class="btn-buy" data-id="${game.id}" aria-label="Buy ${escHtml(game.title)}"
-        ${oos ? 'disabled' : ''}>
-        ${oos ? '⛔ Out of Stock' : (game.checkoutMethod === 'google_form' ? '📋 Order Now' : '💬 Buy via DM')}
+      <button class="btn-buy" data-id="${game.id}" aria-label="Buy ${escHtml(game.title)}">
+        ${game.checkoutMethod === 'google_form' ? '📋 Order Now' : '💬 Buy via DM'}
       </button>
     </div>
   `;
 
-  // Buy button stops propagation so it never triggers modal
+  // Attach modal trigger
+  card.addEventListener('click', () => Modal.open(game));
+
   card.querySelector('.btn-buy').addEventListener('click', (e) => {
     e.stopPropagation();
-    if (!oos) handleBuyNow(game);
+    handleBuyNow(game);
   });
-
-  // Clicking anywhere else on the card opens modal
-  card.addEventListener('click', () => openModal(game));
 
   return card;
 }
@@ -220,11 +211,7 @@ function renderGrid() {
   DOM.gameGrid.innerHTML = '';
   DOM.emptyState.hidden = true;
 
-  // Out-of-stock games always sink to the bottom
-  const games = [...state.filtered].sort((a, b) => {
-    if (!!a.isOutOfStock === !!b.isOutOfStock) return 0;
-    return a.isOutOfStock ? 1 : -1;
-  });
+  const games = state.filtered;
 
   if (games.length === 0) {
     DOM.emptyState.hidden = false;
@@ -244,69 +231,31 @@ function renderGrid() {
 
 /* ── Filter & Search ── */
 function applyFilters() {
-  const q  = state.searchQuery.toLowerCase().trim();
-  const pf = state.activePlatform;
-  const gf = state.activeGenre;
+  const q = state.searchQuery.toLowerCase().trim();
+  const f = state.activeFilter;
 
   state.filtered = state.games.filter(g => {
-    const matchPlatform = pf === 'All' || g.category === pf;
-    const matchGenre    = gf === 'All' || (Array.isArray(g.genres) && g.genres.includes(gf));
-    const matchSearch   = !q ||
+    const matchFilter = f === 'All' || g.category === f;
+    const matchSearch = !q ||
       g.title.toLowerCase().includes(q) ||
       g.description.toLowerCase().includes(q) ||
       (g.platform && g.platform.toLowerCase().includes(q)) ||
-      (g.region   && g.region.toLowerCase().includes(q)) ||
-      (Array.isArray(g.genres) && g.genres.join(' ').toLowerCase().includes(q));
-    return matchPlatform && matchGenre && matchSearch;
+      (g.region && g.region.toLowerCase().includes(q));
+    return matchFilter && matchSearch;
   });
 
   renderGrid();
 }
+
 /* exposed for inline onclick on empty state button */
 window.resetFilters = function () {
-  state.activePlatform = 'All';
-  state.activeGenre    = 'All';
-  state.searchQuery    = '';
+  state.activeFilter = 'All';
+  state.searchQuery = '';
   DOM.searchInput.value = '';
   DOM.searchClear.classList.remove('visible');
   DOM.filterBtns.forEach(b => b.classList.toggle('active', b.dataset.filter === 'All'));
-  document.querySelectorAll('#filters-genre .filter-btn').forEach(b =>
-    b.classList.toggle('active', b.dataset.filter === 'All'));
   applyFilters();
 };
-
-/* ── Build genre filter pills from JSON data ── */
-function buildGenreFilters(games) {
-  if (!DOM.filtersGenre) return; // 🛡️ ADD THIS SAFETY CHECK
-  const allGenres = new Set();
-  games.forEach(g => (g.genres || []).forEach(genre => allGenres.add(genre)));
-  if (allGenres.size === 0) { DOM.filtersGenre.style.display = 'none'; return; }
-
-  const allBtn = document.createElement('button');
-  allBtn.className = 'filter-btn active';
-  allBtn.dataset.filter = 'All';
-  allBtn.dataset.filterType = 'genre';
-  allBtn.textContent = 'All Genres';
-  DOM.filtersGenre.appendChild(allBtn);
-
-  [...allGenres].sort().forEach(genre => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn';
-    btn.dataset.filter = genre;
-    btn.dataset.filterType = 'genre';
-    btn.textContent = genre;
-    DOM.filtersGenre.appendChild(btn);
-  });
-
-  DOM.filtersGenre.addEventListener('click', e => {
-    const btn = e.target.closest('.filter-btn');
-    if (!btn) return;
-    DOM.filtersGenre.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.activeGenre = btn.dataset.filter;
-    applyFilters();
-  });
-}
 
 /* ── Event: Filters ── */
 function initFilters() {
@@ -314,7 +263,7 @@ function initFilters() {
     btn.addEventListener('click', () => {
       DOM.filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      state.activePlatform = btn.dataset.filter;
+      state.activeFilter = btn.dataset.filter;
       applyFilters();
     });
   });
@@ -322,9 +271,8 @@ function initFilters() {
 
 /* ── Event: Search ── */
 function initSearch() {
-  if (!DOM.searchInput || !DOM.searchClear) return; // 🛡️ SAFETY CHECK
-
   let debounceTimer;
+
   DOM.searchInput.addEventListener('input', () => {
     clearTimeout(debounceTimer);
     const val = DOM.searchInput.value;
@@ -350,8 +298,6 @@ function initSearch() {
 
 /* ── Event: Hamburger ── */
 function initHamburger() {
-  if (!DOM.hamburger || !DOM.mobileNav) return; // 🛡️ SAFETY CHECK
-
   DOM.hamburger.addEventListener('click', () => {
     const open = DOM.hamburger.classList.toggle('open');
     DOM.hamburger.setAttribute('aria-expanded', open);
@@ -377,198 +323,137 @@ function escHtml(str) {
   return d.innerHTML;
 }
 
-/* ── Modal ── */
-let sliderIndex = 0;
+/* ── Modal Component ── */
+const Modal = {
+  el: null,
+  body: null,
+  backdrop: null,
+  closeBtn: null,
+  currentIdx: 0,
+  images: [],
+  activeGame: null,
 
-function openModal(game) {
-  state.modalGame = game;
-  const oos        = !!game.isOutOfStock;
-  const discount   = calcDiscount(game.originalPrice, game.price);
-  const regionClass = game.highlightRegion
-    ? 'tag tag-region tag-region-highlight'
-    : 'tag tag-region';
+  init() {
+    this.el = $('game-modal');
+    this.body = $('modal-body');
+    this.backdrop = $('modal-backdrop');
+    this.closeBtn = $('modal-close');
 
-  // Build images array — support legacy single `image` field
-  const images = Array.isArray(game.images) && game.images.length
-    ? game.images
-    : (game.image ? [game.image] : []);
-  sliderIndex = 0;
+    if (!this.el) return;
 
-  // ── Slider ──────────────────────────────────────────────
-  const sliderHtml = images.length > 1
-    ? `<div class="modal-slider">
-         <img class="modal-slide-img" id="modal-slide-img" src="${escHtml(images[0])}" alt="${escHtml(game.title)}" />
-         <div class="slider-controls">
-           <button class="slider-btn" id="slider-prev" onclick="slideModal(-1)">‹</button>
-           <span class="slider-counter" id="slider-counter">1 / ${images.length}</span>
-           <button class="slider-btn" id="slider-next" onclick="slideModal(1)">›</button>
-         </div>
-         <div class="slider-dots" id="slider-dots">
-           ${images.map((_, i) => `<button class="slider-dot${i === 0 ? ' active' : ''}" onclick="goSlide(${i})"></button>`).join('')}
-         </div>
-       </div>`
-    : `<div class="modal-slider">
-         <img class="modal-slide-img" src="${escHtml(images[0] || '')}" alt="${escHtml(game.title)}" />
-       </div>`;
-
-  // ── Pricing ─────────────────────────────────────────────
-  const pricingHtml = `
-    <span class="modal-price-current">${formatPrice(game.price)}</span>
-    ${discount
-      ? `<span class="modal-price-original">${formatPrice(game.originalPrice)}</span>
-         <span class="modal-price-save">SAVE ${discount}%</span>`
-      : ''}
-  `;
-
-  // ── Badges ──────────────────────────────────────────────
-  const badgeHtml = [
-    game.dealBadge ? `<span class="card-badge ${badgeClass(game.dealBadge)}" style="position:static">${escHtml(game.dealBadge)}</span>` : '',
-    oos            ? `<span class="card-badge sale" style="position:static">OUT OF STOCK</span>` : '',
-  ].join('');
-
-  // ── Tags ────────────────────────────────────────────────
-  const tagsHtml = [
-    game.platform ? `<span class="tag tag-platform">${escHtml(game.platform)}</span>` : '',
-    game.region   ? `<span class="${regionClass}">🌍 ${escHtml(game.region)}</span>` : '',
-    game.stock === 'Low Stock' ? `<span class="tag tag-stock-low">⚡ Low Stock</span>` : '',
-  ].join('');
-
-  // ── Accordion sections ───────────────────────────────────
-  const sections = [];
-  if (game.genres?.length) {
-    sections.push({
-      title:   '🎭 Genres',
-      content: game.genres.map(g => `<span class="acc-pill">${escHtml(g)}</span>`).join(''),
+    this.closeBtn.addEventListener('click', () => this.close());
+    this.backdrop.addEventListener('click', () => this.close());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && !this.el.hidden) this.close();
     });
-  }
-  if (game.developer || game.publisher || game.releaseDate) {
-    sections.push({
-      title: '🏢 Developer Info',
-      content: [
-        game.developer   ? `<div class="acc-row"><strong>Developer</strong>${escHtml(game.developer)}</div>`   : '',
-        game.publisher   ? `<div class="acc-row"><strong>Publisher</strong>${escHtml(game.publisher)}</div>`   : '',
-        game.releaseDate ? `<div class="acc-row"><strong>Release</strong>${escHtml(game.releaseDate)}</div>`   : '',
-      ].join(''),
-    });
-  }
-  if (game.audioLanguages || game.textLanguages) {
-    sections.push({
-      title: '🌐 Languages',
-      content: [
-        game.audioLanguages ? `<div class="acc-row"><strong>Audio</strong>${escHtml(game.audioLanguages)}</div>` : '',
-        game.textLanguages  ? `<div class="acc-row"><strong>Text</strong>${escHtml(game.textLanguages)}</div>`  : '',
-      ].join(''),
-    });
-  }
-  if (game.gameModes) {
-    sections.push({
-      title:   '👥 Game Modes',
-      content: game.gameModes.split(',').map(m => `<span class="acc-pill">${escHtml(m.trim())}</span>`).join(''),
-    });
-  }
-  if (game.pcFeatures) {
-    sections.push({
-      title:   '🖥️ PC Features',
-      content: game.pcFeatures.split(',').map(f => `<span class="acc-pill">${escHtml(f.trim())}</span>`).join(''),
-    });
-  }
-  if (game.workingRegions) {
-    sections.push({
-      title:   '✅ Working Regions',
-      content: `<div class="acc-row">${escHtml(game.workingRegions)}</div>`,
-    });
-  }
+  },
 
-  const accordionHtml = sections.map((s, i) => `
-    <div class="accordion-item${i === 0 ? ' open' : ''}">
-      <button class="accordion-trigger" onclick="toggleAccordion(this)">
-        ${s.title} <span class="acc-arrow">▶</span>
-      </button>
-      <div class="accordion-body">
-        <div class="accordion-content">${s.content}</div>
+  open(game) {
+    this.activeGame = game;
+    // Build image array, default to single legacy image if array doesn't exist
+    this.images = (game.images && game.images.length > 0) ? game.images : [game.image];
+    this.currentIdx = 0;
+    
+    this.render(game);
+    
+    this.el.hidden = false;
+    this.el.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  },
+
+  close() {
+    this.el.hidden = true;
+    this.el.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  },
+
+  render(game) {
+    const hasMultiple = this.images.length > 1;
+    const badgeClassStr = badgeClass(game.dealBadge);
+    const badgeHTML = game.dealBadge ? `<span class="card-badge ${badgeClassStr}">${escHtml(game.dealBadge)}</span>` : '';
+    const discount = calcDiscount(game.originalPrice, game.price);
+
+    this.body.innerHTML = `
+      <div class="modal-gallery">
+        <img id="modal-img" src="${this.images[this.currentIdx]}" alt="${escHtml(game.title)}" />
+        ${badgeHTML}
+        ${hasMultiple ? `
+          <button class="modal-nav prev" onclick="Modal.prev(event)">◀</button>
+          <button class="modal-nav next" onclick="Modal.next(event)">▶</button>
+          <div class="modal-dots" id="modal-dots">
+            ${this.images.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}" onclick="Modal.goTo(${i}, event)"></span>`).join('')}
+          </div>
+        ` : ''}
       </div>
-    </div>
-  `).join('');
-
-  // ── Inject HTML into modal shell ─────────────────────────
-  const panel = document.getElementById('modal-panel');
-  panel.innerHTML = `
-    <button class="modal-close" id="modal-close-btn" aria-label="Close">✕</button>
-    <div class="modal-inner">
-      <div class="modal-img-col">
-        ${sliderHtml}
-        <div class="modal-pricing">${pricingHtml}</div>
-        <button class="btn-buy modal-buy-btn" id="modal-buy-btn" ${oos ? 'disabled' : ''}>
-          ${oos ? '⛔ Out of Stock' : (game.checkoutMethod === 'google_form' ? '📋 Order via Form' : '💬 DM to Buy')}
-        </button>
-      </div>
-      <div class="modal-info-col">
-        <div class="modal-badges">${badgeHtml}</div>
-        <h2 class="modal-title">${escHtml(game.title)}</h2>
+      <div class="modal-info">
+        <h2>${escHtml(game.title)}</h2>
+        ${renderTags(game)}
         <p class="modal-desc">${escHtml(game.description)}</p>
-        <div class="modal-tags">${tagsHtml}</div>
-        <div class="accordion">${accordionHtml}</div>
+        
+        <div class="modal-details">
+          ${game.developer ? `<div><strong>Developer:</strong> ${escHtml(game.developer)}</div>` : ''}
+          ${game.publisher ? `<div><strong>Publisher:</strong> ${escHtml(game.publisher)}</div>` : ''}
+          ${game.releaseDate ? `<div><strong>Release:</strong> ${escHtml(game.releaseDate)}</div>` : ''}
+          ${(game.genres && game.genres.length) ? `<div><strong>Genres:</strong> ${escHtml(game.genres.join(', '))}</div>` : ''}
+          ${game.gameModes ? `<div><strong>Modes:</strong> ${escHtml(game.gameModes)}</div>` : ''}
+          ${game.audioLanguages ? `<div><strong>Audio:</strong> ${escHtml(game.audioLanguages)}</div>` : ''}
+          ${game.textLanguages ? `<div><strong>Text:</strong> ${escHtml(game.textLanguages)}</div>` : ''}
+          ${game.pcFeatures ? `<div><strong>Features:</strong> ${escHtml(game.pcFeatures)}</div>` : ''}
+          ${game.workingRegions ? `<div><strong>Works in:</strong> ${escHtml(game.workingRegions)}</div>` : ''}
+        </div>
+
+        <div class="modal-footer">
+          <div class="card-pricing">
+            <span class="price-current">${formatPrice(game.price)}</span>
+            ${discount ? `
+              <span class="price-original">${formatPrice(game.originalPrice)}</span>
+              <span class="price-discount">-${discount}%</span>
+            ` : ''}
+          </div>
+          <button class="btn-buy" id="modal-buy-btn">
+            ${game.checkoutMethod === 'google_form' ? '📋 Order Now' : '💬 Buy via DM'}
+          </button>
+        </div>
       </div>
-    </div>
-  `;
+    `;
 
-  // Wire close button and buy button after innerHTML is set
-  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
-  if (!oos) {
-    document.getElementById('modal-buy-btn').addEventListener('click', () => handleBuyNow(game));
+    // Attach buy listener safely via JS to avoid inline string escaping nightmares
+    this.body.querySelector('#modal-buy-btn').addEventListener('click', () => {
+      handleBuyNow(this.activeGame);
+    });
+  },
+
+  updateImage() {
+    $('modal-img').src = this.images[this.currentIdx];
+    if (this.images.length > 1) {
+      $$('#modal-dots .dot').forEach((d, i) => d.classList.toggle('active', i === this.currentIdx));
+    }
+  },
+
+  next(e) {
+    if (e) e.stopPropagation();
+    this.currentIdx = (this.currentIdx + 1) % this.images.length;
+    this.updateImage();
+  },
+
+  prev(e) {
+    if (e) e.stopPropagation();
+    this.currentIdx = (this.currentIdx - 1 + this.images.length) % this.images.length;
+    this.updateImage();
+  },
+
+  goTo(idx, e) {
+    if (e) e.stopPropagation();
+    this.currentIdx = idx;
+    this.updateImage();
   }
-
-  // Show overlay
-  const overlay = DOM.modalOverlay;
-  overlay.hidden = false;
-  requestAnimationFrame(() => overlay.classList.add('open'));
-  document.body.style.overflow = 'hidden';
-
-  // Store images array for slider functions
-  overlay._images = images;
-}
-
-function closeModal() {
-  const overlay = DOM.modalOverlay;
-  overlay.classList.remove('open');
-  document.body.style.overflow = '';
-  overlay.addEventListener('transitionend', () => { overlay.hidden = true; }, { once: true });
-}
-
-function slideModal(direction) {
-  const images = DOM.modalOverlay._images;
-  if (!images || images.length < 2) return;
-  sliderIndex = (sliderIndex + direction + images.length) % images.length;
-  _updateSlider(images);
-}
-
-function goSlide(index) {
-  const images = DOM.modalOverlay._images;
-  if (!images) return;
-  sliderIndex = index;
-  _updateSlider(images);
-}
-
-function _updateSlider(images) {
-  const img     = document.getElementById('modal-slide-img');
-  const counter = document.getElementById('slider-counter');
-  const dots    = document.querySelectorAll('.slider-dot');
-  if (img)     img.src = images[sliderIndex];
-  if (counter) counter.textContent = `${sliderIndex + 1} / ${images.length}`;
-  dots.forEach((d, i) => d.classList.toggle('active', i === sliderIndex));
-}
-
-function toggleAccordion(trigger) {
-  trigger.closest('.accordion-item').classList.toggle('open');
-}
-
-/* Expose functions used by inline onclick in dynamically-injected modal HTML */
-window.slideModal      = slideModal;
-window.goSlide         = goSlide;
-window.toggleAccordion = toggleAccordion;
+};
 
 /* ── Main: Fetch & Init ── */
 async function init() {
+  // Init modal right away
+  Modal.init();
+
   try {
     const res = await fetch('./games.json');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -592,22 +477,10 @@ async function init() {
     DOM.gridLoading?.remove();
     renderGrid();
 
-    // Build dynamic genre filters
-    buildGenreFilters(state.games);
-
     // Events
     initFilters();
     initSearch();
     initHamburger();
-
-    // Modal close events — overlay click and Escape key only.
-    // The close button inside the panel is wired in openModal() after innerHTML is set.
-    DOM.modalOverlay.addEventListener('click', (e) => {
-      if (e.target === DOM.modalOverlay) closeModal();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !DOM.modalOverlay.hidden) closeModal();
-    });
 
   } catch (err) {
     console.error('WAGD: Failed to load games.json →', err);
