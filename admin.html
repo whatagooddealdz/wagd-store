@@ -1713,32 +1713,34 @@ function startEdit(id) {
   const game = gameData.games.find(g => String(g.id) === String(id));
   if (!game) return;
 
-  document.getElementById('edit-game-id').value  = game.id;
-  document.getElementById('f-title').value        = game.title || '';
-  document.getElementById('f-image').value        = game.image || '';
-  document.getElementById('f-price').value        = game.price || '';
-  document.getElementById('f-original-price').value = game.originalPrice || '';
-  document.getElementById('f-platform').value    = game.platform || '';
-  document.getElementById('f-region').value      = game.region || '';
-  document.getElementById('f-badge').value       = game.dealBadge || '';
-  document.getElementById('f-description').value     = game.description    || '';
-  document.getElementById('f-working-regions').value = game.workingRegions || '';
-  document.getElementById('f-genres').value          = (game.genres || []).join(', ');
-  document.getElementById('f-release-date').value    = game.releaseDate    || '';
-  document.getElementById('f-developer').value       = game.developer      || '';
-  document.getElementById('f-publisher').value       = game.publisher      || '';
-  document.getElementById('f-audio-langs').value     = game.audioLanguages || '';
-  document.getElementById('f-text-langs').value      = game.textLanguages  || '';
-  document.getElementById('f-pc-features').value     = game.pcFeatures     || '';
-  document.getElementById('f-game-modes').value      = game.gameModes      || '';
+  document.getElementById('edit-game-id').value       = game.id;
+  document.getElementById('f-title').value            = game.title          || '';
+  // NOTE: f-image (legacy single-image text field) no longer exists in the form.
+  // Images are handled below via the f-images hidden field + preview list.
+  document.getElementById('f-price').value            = game.price          || '';
+  document.getElementById('f-original-price').value   = game.originalPrice  || '';
+  document.getElementById('f-platform').value         = game.platform       || '';
+  document.getElementById('f-region').value           = game.region         || '';
+  document.getElementById('f-badge').value            = game.dealBadge      || '';
+  document.getElementById('f-description').value      = game.description    || '';
+  document.getElementById('f-working-regions').value  = game.workingRegions || '';
+  document.getElementById('f-genres').value           = (game.genres || []).join(', ');
+  document.getElementById('f-release-date').value     = game.releaseDate    || '';
+  document.getElementById('f-developer').value        = game.developer      || '';
+  document.getElementById('f-publisher').value        = game.publisher      || '';
+  document.getElementById('f-audio-langs').value      = game.audioLanguages || '';
+  document.getElementById('f-text-langs').value       = game.textLanguages  || '';
+  document.getElementById('f-pc-features').value      = game.pcFeatures     || '';
+  document.getElementById('f-game-modes').value       = game.gameModes      || '';
 
   // Populate multi-image previews from saved images array
-  const imagesForEdit  = Array.isArray(game.images) && game.images.length
+  // Support legacy single `image` string field as fallback
+  const imagesForEdit = Array.isArray(game.images) && game.images.length
     ? game.images
     : (game.image ? [game.image] : []);
-  const fImages        = document.getElementById('f-images');
-  const previewList    = document.getElementById('upload-preview-list');
-  const editStatus     = document.getElementById('upload-status');
+  const fImages    = document.getElementById('f-images');
+  const previewList = document.getElementById('upload-preview-list');
+  const editStatus  = document.getElementById('upload-status');
   if (fImages)      fImages.value = JSON.stringify(imagesForEdit);
   if (previewList) {
     previewList.innerHTML = '';
@@ -1754,9 +1756,11 @@ function startEdit(id) {
     editStatus.className   = 'upload-status ok';
   }
 
-  // Selects
+  // Selects — set value then verify (gracefully falls back to first option if value missing)
   const catSel = document.getElementById('f-category');
   catSel.value = game.category || 'PC';
+  // If the value didn't match any option (shouldn't happen now Software is present), default PC
+  if (!catSel.value) catSel.value = 'PC';
 
   const stockSel = document.getElementById('f-stock');
   stockSel.value = game.stock || 'In Stock';

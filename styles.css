@@ -848,12 +848,8 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   z-index: 3;
 }
 
-/* ── Region highlight (orange) ── */
-.tag-region-highlight {
-  background: rgba(255, 140, 0, 0.15);
-  color: #ff8c00;
-  border: 1px solid rgba(255, 140, 0, 0.35);
-}
+
+/* ── Region highlight — see .tag-region-highlight below for full styles ── */
 
 .card-badge {
   position: absolute;
@@ -924,10 +920,16 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   color: var(--text-muted);
   border: 1px solid var(--bg-border);
 }
+@keyframes region-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(0, 229, 255, 0.5), 0 0 8px rgba(0, 229, 255, 0.25); }
+  50%       { box-shadow: 0 0 8px rgba(0, 229, 255, 0.9), 0 0 16px rgba(0, 229, 255, 0.5); }
+}
 .tag-region-highlight {
-  background: rgba(255, 140, 0, 0.12);
-  color: #ff8c00;
-  border: 1px solid rgba(255, 140, 0, 0.35);
+  background: rgba(0, 229, 255, 0.12);
+  color: #00e5ff;
+  border: 1px solid rgba(0, 229, 255, 0.6);
+  animation: region-pulse 2s ease-in-out infinite;
+  font-weight: 700;
 }
 .tag-stock-low {
   background: rgba(255,170,0,0.1);

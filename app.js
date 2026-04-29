@@ -9,7 +9,8 @@
 const state = {
   games:           [],
   filtered:        [],
-  activeFilter:    'All',
+  activePlatform:  'All',
+  activeGenre:     'All',
   searchQuery:     '',
   instagramHandle: 'myusername',
   modalGame:       null,
@@ -34,11 +35,11 @@ const DOM = {
   searchInput:      $('search-input'),
   searchClear:      $('search-clear'),
   filterBtns:       $$('.filter-btn'),
+  filtersGenre:     $('filters-genre'),
   hamburger:        $('hamburger'),
   mobileNav:        $('mobile-nav'),
   toast:            $('toast'),
   modalOverlay:     $('modal-overlay'),
-  modalClose:       $('modal-close'),
 };
 
 /* ── Helpers ── */
@@ -239,18 +240,20 @@ function renderGrid() {
 
 /* ── Filter & Search ── */
 function applyFilters() {
-  const q = state.searchQuery.toLowerCase().trim();
-  const f = state.activeFilter;
+  const q  = state.searchQuery.toLowerCase().trim();
+  const pf = state.activePlatform;
+  const gf = state.activeGenre;
 
   state.filtered = state.games.filter(g => {
-    const matchFilter = f === 'All' || g.category === f;
-    const matchSearch = !q ||
+    const matchPlatform = pf === 'All' || g.category === pf;
+    const matchGenre    = gf === 'All' || (Array.isArray(g.genres) && g.genres.includes(gf));
+    const matchSearch   = !q ||
       g.title.toLowerCase().includes(q) ||
       g.description.toLowerCase().includes(q) ||
       (g.platform && g.platform.toLowerCase().includes(q)) ||
       (g.region   && g.region.toLowerCase().includes(q)) ||
       (Array.isArray(g.genres) && g.genres.join(' ').toLowerCase().includes(q));
-    return matchFilter && matchSearch;
+    return matchPlatform && matchGenre && matchSearch;
   });
 
   renderGrid();
@@ -365,101 +368,6 @@ function escHtml(str) {
   const d = document.createElement('div');
   d.textContent = str ?? '';
   return d.innerHTML;
-}
-
-/* ── Modal ── */
-function openModal(game) {
-  state.modalGame = game;
-  const o = DOM.modalOverlay;
-  const discount = calcDiscount(game.originalPrice, game.price);
-  const oos = !!game.isOutOfStock;
-  const regionClass = game.highlightRegion ? 'tag tag-region tag-region-highlight' : 'tag tag-region';
-
-  // Cover image
-  $('modal-img').src = game.image;
-  $('modal-img').alt = game.title + ' cover';
-
-  // Pricing
-  $('modal-pricing').innerHTML = `
-    <span class="modal-price-current">${formatPrice(game.price)}</span>
-    ${discount ? `<span class="modal-price-original">${formatPrice(game.originalPrice)}</span>
-                  <span class="modal-price-save">SAVE ${discount}%</span>` : ''}
-  `;
-
-  // Buy button
-  const buyBtn = $('modal-buy-btn');
-  buyBtn.textContent = oos ? '⛔ Out of Stock'
-    : (game.checkoutMethod === 'google_form' ? '📋 Order via Form' : '💬 DM to Buy');
-  buyBtn.disabled = oos;
-  buyBtn.onclick  = oos ? null : () => handleBuyNow(game);
-
-  // Badges
-  const badgeHtml = [
-    game.dealBadge ? `<span class="card-badge ${badgeClass(game.dealBadge)}" style="position:static">${escHtml(game.dealBadge)}</span>` : '',
-    oos ? `<span class="card-badge sale" style="position:static">OUT OF STOCK</span>` : '',
-  ].join('');
-  $('modal-badges').innerHTML = badgeHtml;
-
-  // Title + desc
-  $('modal-title').textContent = game.title;
-  $('modal-desc').textContent  = game.description;
-
-  // Tags
-  $('modal-tags').innerHTML = `
-    ${game.platform ? `<span class="tag tag-platform">${escHtml(game.platform)}</span>` : ''}
-    ${game.region   ? `<span class="${regionClass}">🌍 ${escHtml(game.region)}</span>` : ''}
-    ${game.stock === 'Low Stock' ? `<span class="tag tag-stock-low">⚡ Low Stock</span>` : ''}
-  `;
-
-  // Accordion sections
-  const sections = [];
-  if (game.genres?.length)  sections.push({ title: '🎭 Genres',     content: game.genres.map(g => `<span class="acc-pill">${escHtml(g)}</span>`).join('') });
-  if (game.developer || game.publisher || game.releaseDate) {
-    const rows = [
-      game.developer   ? `<div class="acc-row"><strong>Developer</strong>${escHtml(game.developer)}</div>`   : '',
-      game.publisher   ? `<div class="acc-row"><strong>Publisher</strong>${escHtml(game.publisher)}</div>`   : '',
-      game.releaseDate ? `<div class="acc-row"><strong>Release</strong>${escHtml(game.releaseDate)}</div>`   : '',
-    ].join('');
-    sections.push({ title: '🏢 Developer Info', content: rows });
-  }
-  if (game.audioLanguages || game.textLanguages) {
-    const rows = [
-      game.audioLanguages ? `<div class="acc-row"><strong>Audio</strong>${escHtml(game.audioLanguages)}</div>` : '',
-      game.textLanguages  ? `<div class="acc-row"><strong>Text</strong>${escHtml(game.textLanguages)}</div>`  : '',
-    ].join('');
-    sections.push({ title: '🌐 Languages', content: rows });
-  }
-  if (game.gameModes)   sections.push({ title: '👥 Game Modes',   content: game.gameModes.split(',').map(m => `<span class="acc-pill">${escHtml(m.trim())}</span>`).join('') });
-  if (game.pcFeatures)  sections.push({ title: '🖥️ PC Features',  content: game.pcFeatures.split(',').map(f => `<span class="acc-pill">${escHtml(f.trim())}</span>`).join('') });
-  if (game.workingRegions) sections.push({ title: '✅ Working Regions', content: `<div class="acc-row">${escHtml(game.workingRegions)}</div>` });
-
-  const accordion = $('modal-accordion');
-  accordion.innerHTML = sections.map((s, i) => `
-    <div class="accordion-item${i === 0 ? ' open' : ''}">
-      <button class="accordion-trigger" onclick="toggleAccordion(this)">
-        ${s.title} <span class="acc-arrow">▶</span>
-      </button>
-      <div class="accordion-body">
-        <div class="accordion-content">${s.content}</div>
-      </div>
-    </div>
-  `).join('');
-
-  // Show
-  o.hidden = false;
-  requestAnimationFrame(() => o.classList.add('open'));
-  document.body.style.overflow = 'hidden';
-}
-
-function closeModal() {
-  const o = DOM.modalOverlay;
-  o.classList.remove('open');
-  document.body.style.overflow = '';
-  o.addEventListener('transitionend', () => { o.hidden = true; }, { once: true });
-}
-
-function toggleAccordion(trigger) {
-  trigger.closest('.accordion-item').classList.toggle('open');
 }
 
 /* ── Modal ── */
@@ -647,6 +555,11 @@ function toggleAccordion(trigger) {
   trigger.closest('.accordion-item').classList.toggle('open');
 }
 
+/* Expose functions used by inline onclick in dynamically-injected modal HTML */
+window.slideModal      = slideModal;
+window.goSlide         = goSlide;
+window.toggleAccordion = toggleAccordion;
+
 /* ── Main: Fetch & Init ── */
 async function init() {
   try {
@@ -680,8 +593,8 @@ async function init() {
     initSearch();
     initHamburger();
 
-    // Modal close events
-    DOM.modalClose.addEventListener('click', closeModal);
+    // Modal close events — overlay click and Escape key only.
+    // The close button inside the panel is wired in openModal() after innerHTML is set.
     DOM.modalOverlay.addEventListener('click', (e) => {
       if (e.target === DOM.modalOverlay) closeModal();
     });
