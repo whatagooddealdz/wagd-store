@@ -243,22 +243,6 @@
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     },
     {
-      "id": 1777239331945,
-      "title": "Claude Pro - 1 Month",
-      "image": "images/Claude.jpg",
-      "description": "🚀 How to recharge?\nNo login needed, just your Claude ID via official channels\n💡 How to get Claude Organization ID?\nVisit claude.ai/settings and find your Organization ID in account info\nNote!:\nyou should have no active premium subscription",
-      "platform": "PC/Mobile",
-      "category": "PC",
-      "region": "Global",
-      "stock": "Out of Stock",
-      "price": 6000,
-      "originalPrice": 6000,
-      "dealBadge": "HOT",
-      "isDealOfTheWeek": false,
-      "checkoutMethod": "instagram",
-      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
-    },
-    {
       "id": 1777239676766,
       "title": "Adobe Creative Cloud Pro - 1 Month",
       "image": "images/Adobe Creative Cloud Pro.jpg",
@@ -270,6 +254,22 @@
       "price": 1800,
       "originalPrice": 1800,
       "dealBadge": null,
+      "isDealOfTheWeek": false,
+      "checkoutMethod": "instagram",
+      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
+    },
+    {
+      "id": 1777239331945,
+      "title": "Claude Pro - 1 Month",
+      "image": "images/Claude.jpg",
+      "description": "🚀 How to recharge?\nNo login needed, just your Claude ID via official channels\n💡 How to get Claude Organization ID?\nVisit claude.ai/settings and find your Organization ID in account info\nNote!:\nyou should have no active premium subscription",
+      "platform": "PC/Mobile",
+      "category": "PC",
+      "region": "Global",
+      "stock": "Out of Stock",
+      "price": 6000,
+      "originalPrice": 6000,
+      "dealBadge": "HOT",
       "isDealOfTheWeek": false,
       "checkoutMethod": "instagram",
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
