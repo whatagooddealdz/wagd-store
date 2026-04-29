@@ -277,7 +277,7 @@ window.resetFilters = function () {
 
 /* ── Build genre filter pills from JSON data ── */
 function buildGenreFilters(games) {
-  if (!DOM.filtersGenre) return;
+  if (!DOM.filtersGenre) return; // 🛡️ ADD THIS SAFETY CHECK
   const allGenres = new Set();
   games.forEach(g => (g.genres || []).forEach(genre => allGenres.add(genre)));
   if (allGenres.size === 0) { DOM.filtersGenre.style.display = 'none'; return; }
