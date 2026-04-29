@@ -275,22 +275,6 @@
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     },
     {
-      "id": 1777321906419,
-      "title": "Forza Horizon 6 Standard Edition (Windows/Xbox Series X|S) XBOX LIVE",
-      "image": "images/Forza Horizon 6.jpg",
-      "description": "Release date May 19, 2026\nImportant Notice:\nWe inform you that our PRE-ORDER bonuses may not be included and when included, may differ from the other offers available in the market. You will receive your product key upon the game’s release date.",
-      "platform": "Windows/Xbox Series X|S",
-      "category": "PC",
-      "region": "Global",
-      "stock": "In Stock",
-      "price": 15600,
-      "originalPrice": 16000,
-      "dealBadge": "PRE-ORDER",
-      "isDealOfTheWeek": false,
-      "checkoutMethod": "instagram",
-      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
-    },
-    {
       "id": 1777239331945,
       "title": "Claude Pro - 1 Month",
       "image": "images/Claude.jpg",
@@ -302,6 +286,22 @@
       "price": 6000,
       "originalPrice": 6000,
       "dealBadge": "HOT",
+      "isDealOfTheWeek": false,
+      "checkoutMethod": "instagram",
+      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
+    },
+    {
+      "id": 1777321906419,
+      "title": "Forza Horizon 6 Standard Edition (Windows/Xbox Series X|S) XBOX LIVE",
+      "image": "images/Forza Horizon 6.jpg",
+      "description": "Release date May 19, 2026\nImportant Notice:\nWe inform you that our PRE-ORDER bonuses may not be included and when included, may differ from the other offers available in the market. You will receive your product key upon the game’s release date.",
+      "platform": "Windows/Xbox Series X|S",
+      "category": "PC",
+      "region": "Global",
+      "stock": "In Stock",
+      "price": 15600,
+      "originalPrice": 16000,
+      "dealBadge": "PRE-ORDER",
       "isDealOfTheWeek": false,
       "checkoutMethod": "instagram",
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
