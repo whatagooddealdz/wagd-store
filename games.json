@@ -19,22 +19,6 @@
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     },
     {
-      "id": 4,
-      "title": "Hollow Knight: Silksong",
-      "image": "https://placehold.co/400x560/1a1a2e/00FF00?text=Silksong&font=oswald",
-      "description": "Play as Hornet and venture to a vast new kingdom. Master new skills, hunt new beasts and discover ancient secrets.",
-      "platform": "PC / Xbox",
-      "category": "Indie",
-      "region": "Global",
-      "stock": "Out of Stock",
-      "price": 3500,
-      "originalPrice": 5000,
-      "dealBadge": "Coming soon",
-      "isDealOfTheWeek": false,
-      "checkoutMethod": "instagram",
-      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
-    },
-    {
       "id": 2,
       "title": "Webbed",
       "image": "images/Webbed.jpg",
@@ -46,6 +30,22 @@
       "price": 1000,
       "originalPrice": 1500,
       "dealBadge": null,
+      "isDealOfTheWeek": false,
+      "checkoutMethod": "instagram",
+      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
+    },
+    {
+      "id": 4,
+      "title": "Hollow Knight: Silksong",
+      "image": "https://placehold.co/400x560/1a1a2e/00FF00?text=Silksong&font=oswald",
+      "description": "Play as Hornet and venture to a vast new kingdom. Master new skills, hunt new beasts and discover ancient secrets.",
+      "platform": "PC / Xbox",
+      "category": "Indie",
+      "region": "Global",
+      "stock": "Out of Stock",
+      "price": 3500,
+      "originalPrice": 5000,
+      "dealBadge": "Coming soon",
       "isDealOfTheWeek": false,
       "checkoutMethod": "instagram",
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
