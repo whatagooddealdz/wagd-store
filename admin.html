@@ -741,6 +741,37 @@
     .upload-status.ok  { color: var(--neon); }
     .upload-status.err { color: var(--danger); }
 
+    /* ── Image Previews & Deletion ── */
+    .preview-item {
+      position: relative;
+      display: inline-block;
+    }
+    .preview-item img {
+      width: 48px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    .preview-del {
+      position: absolute;
+      top: -6px; right: -6px;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 18px; height: 18px;
+      font-size: 10px;
+      line-height: 18px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      transition: transform 0.2s;
+    }
+    .preview-del:hover {
+      transform: scale(1.2);
+    }
+
     /* ── New detail fields section ── */
     .detail-fields-toggle {
       display: flex;
@@ -826,15 +857,11 @@
 </head>
 <body>
 
-<!-- =====================================================
-     LOGIN SCREEN
-===================================================== -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo"><span>W</span>AGD <span style="font-size:20px;color:#777;">Admin</span></div>
     <p class="login-subtitle">Store Management Portal</p>
 
-    <!-- HOW TO GET YOUR PAT — Read this carefully! -->
     <div class="login-instructions">
       <strong>🔑 How to get your GitHub Token (do this once):</strong>
       <ol>
@@ -872,12 +899,8 @@
   </div>
 </div>
 
-<!-- =====================================================
-     DASHBOARD
-===================================================== -->
 <div id="dashboard">
 
-  <!-- Top bar -->
   <div class="topbar">
     <div class="topbar-brand">
       <span>W</span>AGD <div class="topbar-badge">Admin</div>
@@ -888,13 +911,10 @@
     </div>
   </div>
 
-  <!-- Body -->
   <div class="dash-body">
 
-    <!-- ── Sidebar ── -->
     <aside class="sidebar">
 
-      <!-- Announcement Manager -->
       <div class="announce-manager">
         <p class="sidebar-section-title">📢 Announcement Bar</p>
         <div class="field-group">
@@ -908,7 +928,6 @@
 
       <hr style="border:none;border-top:1px solid var(--border);" />
 
-      <!-- Add / Edit Game Form -->
       <div class="add-form-wrap">
         <div class="form-section-title">
           <span id="form-mode-label">Add Game</span>
@@ -933,7 +952,6 @@
               <input type="file" id="f-image-file" accept="image/*" multiple style="display:none" onchange="handleImageUpload(this)" />
               <div id="upload-preview-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;"></div>
               <span class="upload-status" id="upload-status"></span>
-              <!-- Hidden field stores JSON array of uploaded URLs -->
               <input type="hidden" id="f-images" />
             </div>
           </div>
@@ -977,7 +995,6 @@
             </select>
           </div>
 
-          <!-- Out of Stock toggle -->
           <div class="field-group">
             <label>Out of Stock</label>
             <div class="toggle-wrap" onclick="toggleOutOfStock()">
@@ -987,7 +1004,6 @@
             <input type="hidden" id="f-oos" value="false" />
           </div>
 
-          <!-- Highlight Region toggle -->
           <div class="field-group span-2">
             <label>Highlight Region (shows orange)</label>
             <div class="toggle-wrap" onclick="toggleHighlightRegion()">
@@ -997,13 +1013,11 @@
             <input type="hidden" id="f-highlight-region" value="false" />
           </div>
 
-          <!-- Working Regions -->
           <div class="field-group span-2">
             <label>Working Regions</label>
             <input type="text" id="f-working-regions" placeholder="e.g. DZ, FR, US, UK" />
           </div>
 
-          <!-- Collapsible detail fields -->
           <div class="span-2">
             <button type="button" class="detail-fields-toggle" id="detail-toggle" onclick="toggleDetailFields()">
               <span class="arrow">▶</span> Optional Game Details (Genres, Languages, Developer…)
@@ -1051,9 +1065,7 @@
               <input type="text" id="f-game-modes" placeholder="Single-player, Multiplayer, Co-op…" />
             </div>
 
-          </div><!-- end detail-fields-wrap -->
-
-          <div class="field-group span-2">
+          </div><div class="field-group span-2">
             <label>Description <span class="required">*</span></label>
             <textarea id="f-description" placeholder="Short description..." rows="3"></textarea>
           </div>
@@ -1070,8 +1082,6 @@
               <option value="google_form">📋 Google Form</option>
             </select>
           </div>
-
-          <!-- Checkout link is now auto-filled from global constants — no manual input needed -->
 
           <div class="field-group span-2">
             <div class="toggle-wrap" onclick="toggleDotw()">
@@ -1093,10 +1103,8 @@
       </div>
     </aside>
 
-    <!-- ── Main Content ── -->
     <main class="main-content">
 
-      <!-- Stats -->
       <div class="stats-bar" id="stats-bar">
         <div class="stat-card">
           <div class="stat-label">Total Games</div>
@@ -1120,7 +1128,6 @@
         </div>
       </div>
 
-      <!-- Inventory -->
       <div class="section-header">
         <h2>🎮 Game Inventory</h2>
         <button class="btn btn-secondary btn-sm" onclick="loadData(true)">
@@ -1138,7 +1145,6 @@
     </main>
   </div>
 
-  <!-- Status bar -->
   <div class="status-bar">
     <div class="status-dot ok" id="conn-dot"></div>
     <span id="status-text">Connected</span>
@@ -1146,10 +1152,8 @@
   </div>
 </div>
 
-<!-- Toast container -->
 <div class="toast-container" id="toast-container"></div>
 
-<!-- Confirm dialog (hidden by default) -->
 <div class="overlay hidden" id="confirm-overlay">
   <div class="dialog">
     <div class="dialog-title" id="dialog-title">Confirm</div>
@@ -1161,9 +1165,6 @@
   </div>
 </div>
 
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
 <script>
 'use strict';
 
@@ -1452,16 +1453,55 @@ function setDotwUI(value) {
   label.className   = `toggle-label${value ? ' active' : ''}`;
 }
 
-/* ── ImgBB Upload ── */
+/* ── ImgBB Upload & Previews ── */
 // PASTE YOUR IMGBB API KEY HERE (get one free at imgbb.com)
-const IMGBB_API_KEY = 'f2c45bf2a93225f1d471a48b5164da89';
+const IMGBB_API_KEY = 'YOUR_IMGBB_API_KEY_HERE';
+
+function renderImagePreviews(urls) {
+  const previewList = document.getElementById('upload-preview-list');
+  const hidden = document.getElementById('f-images');
+  
+  hidden.value = JSON.stringify(urls);
+  previewList.innerHTML = '';
+  
+  urls.forEach((url, index) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'preview-item';
+    
+    const img = document.createElement('img');
+    img.src = url;
+    
+    const delBtn = document.createElement('button');
+    delBtn.className = 'preview-del';
+    delBtn.innerHTML = '✕';
+    delBtn.onclick = (e) => {
+      e.preventDefault();
+      // Remove this image from the array
+      urls.splice(index, 1);
+      // Re-render
+      renderImagePreviews(urls);
+      
+      const status = document.getElementById('upload-status');
+      if (urls.length > 0) {
+        status.textContent = `✅ ${urls.length} image(s) loaded.`;
+        status.className = 'upload-status ok';
+      } else {
+        status.textContent = '';
+        status.className = 'upload-status';
+      }
+    };
+    
+    wrap.appendChild(img);
+    wrap.appendChild(delBtn);
+    previewList.appendChild(wrap);
+  });
+}
 
 async function handleImageUpload(input) {
   const files   = Array.from(input.files);
   if (!files.length) return;
 
   const status      = document.getElementById('upload-status');
-  const previewList = document.getElementById('upload-preview-list');
   const hidden      = document.getElementById('f-images');
 
   status.textContent = `⏳ Uploading ${files.length} image(s)…`;
@@ -1475,13 +1515,6 @@ async function handleImageUpload(input) {
   let failCount = 0;
 
   for (const file of files) {
-    // Instant local preview while uploading
-    const localSrc = URL.createObjectURL(file);
-    const thumb = document.createElement('img');
-    thumb.src   = localSrc;
-    thumb.style.cssText = 'width:48px;height:64px;object-fit:cover;border-radius:4px;border:1px solid var(--border);opacity:0.5;';
-    previewList.appendChild(thumb);
-
     const formData = new FormData();
     formData.append('image', file);
     try {
@@ -1491,25 +1524,24 @@ async function handleImageUpload(input) {
       });
       const json = await res.json();
       if (!json.success) throw new Error(json.error?.message || 'Upload failed');
-      const url   = json.data.url;
-      newUrls.push(url);
-      thumb.src           = url;
-      thumb.style.opacity = '1';
+      newUrls.push(json.data.url);
     } catch (e) {
       failCount++;
-      thumb.style.border  = '1px solid var(--danger)';
-      thumb.style.opacity = '1';
     }
   }
 
   const allUrls  = [...existingUrls, ...newUrls];
-  hidden.value   = JSON.stringify(allUrls);
+  
+  // Hand off array to render logic
+  renderImagePreviews(allUrls);
+  
   const okCount  = newUrls.length;
   status.textContent = failCount
     ? `⚠️ ${okCount} uploaded, ${failCount} failed.`
     : `✅ ${okCount} image(s) uploaded. ${allUrls.length} total.`;
   status.className = failCount ? 'upload-status err' : 'upload-status ok';
 }
+
 /* ── Out of Stock toggle ── */
 function toggleOutOfStock() {
   const inp    = document.getElementById('f-oos');
@@ -1713,54 +1745,40 @@ function startEdit(id) {
   const game = gameData.games.find(g => String(g.id) === String(id));
   if (!game) return;
 
-  document.getElementById('edit-game-id').value       = game.id;
-  document.getElementById('f-title').value            = game.title          || '';
-  // NOTE: f-image (legacy single-image text field) no longer exists in the form.
-  // Images are handled below via the f-images hidden field + preview list.
-  document.getElementById('f-price').value            = game.price          || '';
-  document.getElementById('f-original-price').value   = game.originalPrice  || '';
-  document.getElementById('f-platform').value         = game.platform       || '';
-  document.getElementById('f-region').value           = game.region         || '';
-  document.getElementById('f-badge').value            = game.dealBadge      || '';
-  document.getElementById('f-description').value      = game.description    || '';
-  document.getElementById('f-working-regions').value  = game.workingRegions || '';
-  document.getElementById('f-genres').value           = (game.genres || []).join(', ');
-  document.getElementById('f-release-date').value     = game.releaseDate    || '';
-  document.getElementById('f-developer').value        = game.developer      || '';
-  document.getElementById('f-publisher').value        = game.publisher      || '';
-  document.getElementById('f-audio-langs').value      = game.audioLanguages || '';
-  document.getElementById('f-text-langs').value       = game.textLanguages  || '';
-  document.getElementById('f-pc-features').value      = game.pcFeatures     || '';
-  document.getElementById('f-game-modes').value       = game.gameModes      || '';
+  document.getElementById('edit-game-id').value  = game.id;
+  document.getElementById('f-title').value        = game.title || '';
+  document.getElementById('f-price').value        = game.price || '';
+  document.getElementById('f-original-price').value = game.originalPrice || '';
+  document.getElementById('f-platform').value    = game.platform || '';
+  document.getElementById('f-region').value      = game.region || '';
+  document.getElementById('f-badge').value       = game.dealBadge || '';
+  document.getElementById('f-description').value     = game.description    || '';
+  document.getElementById('f-working-regions').value = game.workingRegions || '';
+  document.getElementById('f-genres').value          = (game.genres || []).join(', ');
+  document.getElementById('f-release-date').value    = game.releaseDate    || '';
+  document.getElementById('f-developer').value       = game.developer      || '';
+  document.getElementById('f-publisher').value       = game.publisher      || '';
+  document.getElementById('f-audio-langs').value     = game.audioLanguages || '';
+  document.getElementById('f-text-langs').value      = game.textLanguages  || '';
+  document.getElementById('f-pc-features').value     = game.pcFeatures     || '';
+  document.getElementById('f-game-modes').value      = game.gameModes      || '';
 
-  // Populate multi-image previews from saved images array
-  // Support legacy single `image` string field as fallback
-  const imagesForEdit = Array.isArray(game.images) && game.images.length
+  // Populate multi-image previews from saved images array using the new helper
+  const imagesForEdit  = Array.isArray(game.images) && game.images.length
     ? game.images
     : (game.image ? [game.image] : []);
-  const fImages    = document.getElementById('f-images');
-  const previewList = document.getElementById('upload-preview-list');
-  const editStatus  = document.getElementById('upload-status');
-  if (fImages)      fImages.value = JSON.stringify(imagesForEdit);
-  if (previewList) {
-    previewList.innerHTML = '';
-    imagesForEdit.forEach(url => {
-      const thumb = document.createElement('img');
-      thumb.src   = url;
-      thumb.style.cssText = 'width:48px;height:64px;object-fit:cover;border-radius:4px;border:1px solid var(--border);';
-      previewList.appendChild(thumb);
-    });
-  }
+    
+  renderImagePreviews(imagesForEdit);
+
+  const editStatus     = document.getElementById('upload-status');
   if (editStatus && imagesForEdit.length) {
     editStatus.textContent = `✅ ${imagesForEdit.length} image(s) loaded.`;
     editStatus.className   = 'upload-status ok';
   }
 
-  // Selects — set value then verify (gracefully falls back to first option if value missing)
+  // Selects
   const catSel = document.getElementById('f-category');
   catSel.value = game.category || 'PC';
-  // If the value didn't match any option (shouldn't happen now Software is present), default PC
-  if (!catSel.value) catSel.value = 'PC';
 
   const stockSel = document.getElementById('f-stock');
   stockSel.value = game.stock || 'In Stock';

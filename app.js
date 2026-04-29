@@ -168,7 +168,7 @@ function renderCard(game) {
   const bClass = badgeClass(badge);
 
   const card = document.createElement('article');
-  card.className = 'game-card';
+  card.className = 'game-card' + (game.isOutOfStock ? ' out-of-stock' : '');
   card.setAttribute('aria-label', game.title);
   card.style.animationDelay = `${Math.random() * 0.15}s`;
 
@@ -242,6 +242,12 @@ function applyFilters() {
       (g.platform && g.platform.toLowerCase().includes(q)) ||
       (g.region && g.region.toLowerCase().includes(q));
     return matchFilter && matchSearch;
+  });
+
+  // Sort: Put "Out of Stock" games at the very bottom
+  state.filtered.sort((a, b) => {
+    if (a.isOutOfStock === b.isOutOfStock) return 0;
+    return a.isOutOfStock ? 1 : -1;
   });
 
   renderGrid();
@@ -375,6 +381,7 @@ const Modal = {
 
     this.body.innerHTML = `
       <div class="modal-gallery">
+        <button class="modal-fullscreen-btn" onclick="Modal.fullscreen(event)" aria-label="Full Screen">⛶</button>
         <img id="modal-img" src="${this.images[this.currentIdx]}" alt="${escHtml(game.title)}" />
         ${badgeHTML}
         ${hasMultiple ? `
@@ -417,7 +424,7 @@ const Modal = {
       </div>
     `;
 
-    // Attach buy listener safely via JS to avoid inline string escaping nightmares
+    // Attach buy listener safely via JS
     this.body.querySelector('#modal-buy-btn').addEventListener('click', () => {
       handleBuyNow(this.activeGame);
     });
@@ -446,6 +453,18 @@ const Modal = {
     if (e) e.stopPropagation();
     this.currentIdx = idx;
     this.updateImage();
+  },
+
+  fullscreen(e) {
+    if (e) e.stopPropagation();
+    const imgElement = $('modal-img');
+    if (!document.fullscreenElement) {
+      imgElement.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
   }
 };
 
@@ -475,7 +494,7 @@ async function init() {
 
     // Grid
     DOM.gridLoading?.remove();
-    renderGrid();
+    applyFilters(); // Call applyFilters to immediately apply the out of stock sorting hook
 
     // Events
     initFilters();
