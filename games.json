@@ -351,6 +351,19 @@
       "originalPrice": 4300,
       "dealBadge": null,
       "isDealOfTheWeek": false,
+      "isOutOfStock": false,
+      "highlightRegion": true,
+      "workingRegions": null,
+      "genres": [
+        "Action RPG Naval Combat Open World Pirates Exploration Action RPG"
+      ],
+      "releaseDate": "16 Feb 2024",
+      "developer": "Ubisoft Singapore",
+      "publisher": "Ubisoft",
+      "audioLanguages": null,
+      "textLanguages": "Audio: English German French Spanish Japanese Text: English Polish German French Portuguese (Brazil) Spanish Spanish (Mexico) Italian Arabic Chinese Chinese (Simplified) Japanese Korean Russian",
+      "pcFeatures": "Full controller support DLSS DLSS Super Resolution PC Ray Tracing AMD FSR 2",
+      "gameModes": "Single-player Online multiplayer Co-op PvP Online PvP Online Co-op",
       "checkoutMethod": "instagram",
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     }
