@@ -71,15 +71,19 @@ function showToast(msg, duration = 3500) {
 
 /* ── Announcement Bar ── */
 function initAnnouncement(text) {
-  DOM.announcementText.textContent = text;
+  if (DOM.announcementText) DOM.announcementText.textContent = text;
+  
   const dismissed = sessionStorage.getItem('wagd_announce_dismissed');
-  if (dismissed) {
+  if (dismissed && DOM.announcementBar) {
     DOM.announcementBar.classList.add('dismissed');
   }
-  DOM.dismissBtn.addEventListener('click', () => {
-    DOM.announcementBar.classList.add('dismissed');
-    sessionStorage.setItem('wagd_announce_dismissed', '1');
-  });
+  
+  if (DOM.dismissBtn) { // 🛡️ SAFETY CHECK
+    DOM.dismissBtn.addEventListener('click', () => {
+      if (DOM.announcementBar) DOM.announcementBar.classList.add('dismissed');
+      sessionStorage.setItem('wagd_announce_dismissed', '1');
+    });
+  }
 }
 
 /* ── Instagram links ── */
@@ -318,8 +322,9 @@ function initFilters() {
 
 /* ── Event: Search ── */
 function initSearch() {
-  let debounceTimer;
+  if (!DOM.searchInput || !DOM.searchClear) return; // 🛡️ SAFETY CHECK
 
+  let debounceTimer;
   DOM.searchInput.addEventListener('input', () => {
     clearTimeout(debounceTimer);
     const val = DOM.searchInput.value;
@@ -345,6 +350,8 @@ function initSearch() {
 
 /* ── Event: Hamburger ── */
 function initHamburger() {
+  if (!DOM.hamburger || !DOM.mobileNav) return; // 🛡️ SAFETY CHECK
+
   DOM.hamburger.addEventListener('click', () => {
     const open = DOM.hamburger.classList.toggle('open');
     DOM.hamburger.setAttribute('aria-expanded', open);
