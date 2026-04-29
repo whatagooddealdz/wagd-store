@@ -47,7 +47,7 @@
       "originalPrice": 4700,
       "dealBadge": "Available now!",
       "isDealOfTheWeek": false,
-      "isOutOfStock": true,
+      "isOutOfStock": false,
       "highlightRegion": false,
       "workingRegions": "Global",
       "genres": null,
