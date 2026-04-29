@@ -173,34 +173,11 @@
 
   </main>
 
-  <!-- ░░ GAME DETAIL MODAL ░░ -->
-  <div class="modal-overlay" id="modal-overlay" aria-modal="true" role="dialog" aria-label="Game details" hidden>
+  <div class="modal-overlay" id="modal-overlay" hidden>
     <div class="modal-panel" id="modal-panel">
-      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
-
-      <div class="modal-inner">
-        <!-- Left: image -->
-        <div class="modal-img-col">
-          <img id="modal-img" src="" alt="" class="modal-cover" />
-          <div class="modal-pricing" id="modal-pricing"></div>
-          <button class="btn-buy modal-buy-btn" id="modal-buy-btn"></button>
-        </div>
-
-        <!-- Right: details -->
-        <div class="modal-info-col">
-          <div class="modal-badges" id="modal-badges"></div>
-          <h2 class="modal-title" id="modal-title"></h2>
-          <p class="modal-desc" id="modal-desc"></p>
-          <div class="modal-tags" id="modal-tags"></div>
-
-          <!-- Accordion sections -->
-          <div class="accordion" id="modal-accordion"></div>
-        </div>
       </div>
-    </div>
   </div>
 
-  <!-- ░░ FOOTER ░░ -->
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
@@ -223,7 +200,6 @@
     </div>
   </footer>
 
-  <!-- ░░ TOOLTIP / TOAST ░░ -->
   <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
 
   <script src="app.js"></script>
