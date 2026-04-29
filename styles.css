@@ -831,7 +831,8 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 .game-card.out-of-stock .btn-buy {
   opacity: 0.35;
   cursor: not-allowed;
-  pointer-events: none;
+  /* pointer-events left ON so the card click (for modal) still works;
+     the button is disabled via the HTML `disabled` attribute */
 }
 .badge-oos {
   position: absolute;
@@ -922,6 +923,11 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   background: rgba(136,136,136,0.1);
   color: var(--text-muted);
   border: 1px solid var(--bg-border);
+}
+.tag-region-highlight {
+  background: rgba(255, 140, 0, 0.12);
+  color: #ff8c00;
+  border: 1px solid rgba(255, 140, 0, 0.35);
 }
 .tag-stock-low {
   background: rgba(255,170,0,0.1);
@@ -1301,5 +1307,263 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   .modal-inner { flex-direction: column; padding: 0 16px 32px; }
   .modal-img-col { width: 100%; flex-direction: row; align-items: flex-start; gap: 16px; }
   .modal-cover { width: 120px; }
+  .modal-pricing { flex-direction: row; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+}
+
+/* ── Out of Stock badge on card image ── */
+.badge-oos {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(210, 20, 20, 0.88);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 5px 0;
+  z-index: 3;
+}
+.game-card.out-of-stock .card-img-wrap img {
+  filter: grayscale(100%);
+  opacity: 0.6;
+}
+
+/* ── Modal overlay ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+}
+.modal-overlay:not([hidden]) { background: rgba(0, 0, 0, 0.65); }
+
+.modal-panel {
+  width: min(680px, 100vw);
+  height: 100%;
+  background: #111;
+  border-left: 1px solid var(--bg-border);
+  overflow-y: auto;
+  position: relative;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+.modal-overlay.open .modal-panel { transform: translateX(0); }
+
+.modal-close {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 14px 16px;
+  background: rgba(17, 17, 17, 0.92);
+  border: none;
+  color: var(--text-muted);
+  font-size: 20px;
+  cursor: pointer;
+  width: 100%;
+  transition: color var(--transition);
+}
+.modal-close:hover { color: var(--neon); }
+
+.modal-inner {
+  display: flex;
+  gap: 28px;
+  padding: 4px 24px 48px;
+  flex: 1;
+}
+
+/* ── Modal left column ── */
+.modal-img-col {
+  width: 200px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Image Slider ── */
+.modal-slider {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.modal-slide-img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--bg-border);
+  display: block;
+}
+.slider-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.slider-btn {
+  background: var(--bg-elevated);
+  border: 1px solid var(--bg-border);
+  color: var(--text);
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--transition), color var(--transition);
+}
+.slider-btn:hover { border-color: var(--neon); color: var(--neon); }
+.slider-counter {
+  font-size: 12px;
+  color: var(--text-muted);
+  min-width: 36px;
+  text-align: center;
+}
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+.slider-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--bg-border);
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.slider-dot.active { background: var(--neon); }
+
+/* ── Modal pricing ── */
+.modal-pricing {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.modal-price-current {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--neon);
+  text-shadow: var(--shadow-neon);
+  line-height: 1;
+}
+.modal-price-original {
+  font-size: 14px;
+  color: var(--text-dim);
+  text-decoration: line-through;
+}
+.modal-price-save {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ff6b6b;
+}
+.modal-buy-btn { width: 100%; }
+
+/* ── Modal right column ── */
+.modal-info-col { flex: 1; min-width: 0; padding-top: 4px; }
+.modal-badges   { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.modal-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--white);
+  line-height: 1.05;
+  margin-bottom: 12px;
+}
+.modal-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+.modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+
+/* ── Accordion ── */
+.accordion { display: flex; flex-direction: column; gap: 2px; }
+.accordion-item {
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-elevated);
+  border: none;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+.accordion-trigger:hover { background: var(--bg-border); color: var(--neon); }
+.accordion-trigger .acc-arrow {
+  font-size: 11px;
+  color: var(--text-dim);
+  transition: transform 0.25s ease;
+}
+.accordion-item.open .acc-arrow { transform: rotate(90deg); }
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: var(--bg-card);
+}
+.accordion-item.open .accordion-body { max-height: 400px; }
+.accordion-content {
+  padding: 14px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.acc-pill {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border: 1px solid var(--bg-border);
+  border-radius: 100px;
+  padding: 3px 10px;
+}
+.acc-row {
+  width: 100%;
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  gap: 8px;
+}
+.acc-row strong {
+  color: var(--text);
+  min-width: 90px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ── Modal responsive ── */
+@media (max-width: 600px) {
+  .modal-panel  { width: 100vw; border-left: none; }
+  .modal-inner  { flex-direction: column; padding: 0 16px 36px; }
+  .modal-img-col { width: 100%; flex-direction: row; align-items: flex-start; gap: 16px; }
+  .modal-slide-img { width: 130px; aspect-ratio: 3/4; }
   .modal-pricing { flex-direction: row; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 }
