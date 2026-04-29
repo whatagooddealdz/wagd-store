@@ -240,6 +240,12 @@
       "id": 1777412435631,
       "title": "Skull and Bones",
       "image": "images/Skull and Bones.jpg",
+      "images": [
+        "images/Skull and Bones.jpg",
+        "https://i.ibb.co/GvmrJ2JN/1356569.jpg",
+        "https://i.ibb.co/xttCCG3m/1356558.jpg",
+        "https://i.ibb.co/8wW5KZr/wp3970550-skull-bones-wallpapers.jpg"
+      ],
       "description": "Region Europe",
       "platform": "Ubisoft Connect",
       "category": "PC",
