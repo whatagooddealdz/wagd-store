@@ -701,7 +701,74 @@
     .empty-icon { font-size: 36px; margin-bottom: 10px; }
     .empty p { font-size: 14px; }
 
-    /* ── Image Upload ── */     .imgbb-upload-wrap {       display: flex;       flex-direction: column;       gap: 8px;     }     .upload-label {       display: flex;       align-items: center;       justify-content: center;       gap: 8px;       width: 100%;       padding: 10px 14px;       background: var(--surface-2);       border: 1px dashed var(--border);       border-radius: var(--radius);       color: var(--text-muted);       font-size: 13px;       cursor: pointer;       transition: border-color var(--transition), color var(--transition);     }     .upload-label:hover { border-color: var(--neon); color: var(--neon); }     .upload-preview {       width: 100%;       height: 80px;       object-fit: contain;       border-radius: var(--radius);       border: 1px solid var(--border);       background: #111;       display: none;     }     .upload-preview.visible { display: block; }     .upload-status {       font-size: 11px;       color: var(--text-muted);       min-height: 14px;     }     .upload-status.ok  { color: var(--neon); }     .upload-status.err { color: var(--danger); }      /* ── New detail fields section ── */     .detail-fields-toggle {       display: flex;       align-items: center;       gap: 8px;       padding: 8px 0;       font-size: 11px;       font-weight: 700;       letter-spacing: 1px;       text-transform: uppercase;       color: var(--text-dim);       cursor: pointer;       border: none;       background: none;       width: 100%;       border-top: 1px solid var(--border);       margin-top: 4px;     }     .detail-fields-toggle:hover { color: var(--neon); }     .detail-fields-toggle .arrow { transition: transform var(--transition); }     .detail-fields-toggle.open .arrow { transform: rotate(90deg); }     .detail-fields-wrap {       display: none;       grid-column: 1 / -1;     }     .detail-fields-wrap.open { display: contents; }      /* ── Animations ── */
+/* ── Image Upload ── */
+    .imgbb-upload-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .upload-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color var(--transition), color var(--transition);
+    }
+    .upload-label:hover { border-color: var(--neon); color: var(--neon); }
+    .upload-preview {
+      width: 100%;
+      height: 80px;
+      object-fit: contain;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: #111;
+      display: none;
+    }
+    .upload-preview.visible { display: block; }
+    .upload-status {
+      font-size: 11px;
+      color: var(--text-muted);
+      min-height: 14px;
+    }
+    .upload-status.ok  { color: var(--neon); }
+    .upload-status.err { color: var(--danger); }
+
+    /* ── New detail fields section ── */
+    .detail-fields-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      border-top: 1px solid var(--border);
+      margin-top: 4px;
+    }
+    .detail-fields-toggle:hover { color: var(--neon); }
+    .detail-fields-toggle .arrow { transition: transform var(--transition); }
+    .detail-fields-toggle.open .arrow { transform: rotate(90deg); }
+    .detail-fields-wrap {
+      display: none;
+      grid-column: 1 / -1;
+    }
+    .detail-fields-wrap.open { display: contents; }
+
+    /* ── Animations ── */ 
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(8px); }
       to   { opacity: 1; transform: translateY(0); }
