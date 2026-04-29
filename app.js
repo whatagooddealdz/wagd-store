@@ -7,11 +7,13 @@
 
 /* ── State ── */
 const state = {
-  games:          [],
-  filtered:       [],
-  activeFilter:   'All',
-  searchQuery:    '',
-  instagramHandle: 'whatagooddeal.dz',
+  games:           [],
+  filtered:        [],
+  activePlatform:  'All',
+  activeGenre:     'All',
+  searchQuery:     '',
+  instagramHandle: 'myusername',
+  modalGame:       null,
 };
 
 /* ── DOM refs ── */
@@ -33,9 +35,13 @@ const DOM = {
   searchInput:      $('search-input'),
   searchClear:      $('search-clear'),
   filterBtns:       $$('.filter-btn'),
+  filtersGenre:     $('filters-genre'),
   hamburger:        $('hamburger'),
   mobileNav:        $('mobile-nav'),
   toast:            $('toast'),
+  modalOverlay:     $('modal-overlay'),
+  modalPanel:       $('modal-panel'),
+  modalClose:       $('modal-close'),
 };
 
 /* ── Helpers ── */
@@ -141,10 +147,11 @@ function renderTags(game) {
   const stockTag = game.stock === 'Low Stock'
     ? `<span class="tag tag-stock-low">⚡ Low Stock</span>`
     : '';
+  const regionClass = game.highlightRegion ? 'tag-region tag-region-highlight' : 'tag-region';
   return `
     <div class="card-tags">
       ${game.platform ? `<span class="tag tag-platform">${escHtml(game.platform)}</span>` : ''}
-      ${game.region   ? `<span class="tag tag-region">🌍 ${escHtml(game.region)}</span>` : ''}
+      ${game.region   ? `<span class="tag ${regionClass}">🌍 ${escHtml(game.region)}</span>` : ''}
       ${stockTag}
     </div>
   `;
@@ -153,18 +160,21 @@ function renderTags(game) {
 /* ── Render: Game Card ── */
 function renderCard(game) {
   const discount = calcDiscount(game.originalPrice, game.price);
-  const badge = game.dealBadge;
-  const bClass = badgeClass(badge);
+  const badge    = game.dealBadge;
+  const bClass   = badgeClass(badge);
+  const oos      = !!game.isOutOfStock;
 
   const card = document.createElement('article');
-  card.className = 'game-card';
+  card.className = `game-card${oos ? ' out-of-stock' : ''}`;
   card.setAttribute('aria-label', game.title);
   card.style.animationDelay = `${Math.random() * 0.15}s`;
+  card.style.cursor = 'pointer';
 
   card.innerHTML = `
     <div class="card-img-wrap">
       <img src="${game.image}" alt="${escHtml(game.title)} game cover" loading="lazy" />
       ${badge ? `<span class="card-badge ${bClass}">${escHtml(badge)}</span>` : ''}
+      ${oos ? `<div class="badge-oos">Out of Stock</div>` : ''}
     </div>
     <div class="card-body">
       <h3 class="card-title">${escHtml(game.title)}</h3>
@@ -177,16 +187,21 @@ function renderCard(game) {
              <span class="price-discount">-${discount}%</span>`
           : ''}
       </div>
-      <button class="btn-buy" data-id="${game.id}" aria-label="Buy ${escHtml(game.title)}">
-        ${game.checkoutMethod === 'google_form' ? '📋 Order Now' : '💬 Buy via DM'}
+      <button class="btn-buy" data-id="${game.id}" aria-label="Buy ${escHtml(game.title)}"
+        ${oos ? 'disabled' : ''}>
+        ${oos ? '⛔ Out of Stock' : (game.checkoutMethod === 'google_form' ? '📋 Order Now' : '💬 Buy via DM')}
       </button>
     </div>
   `;
 
+  // Buy button — stop propagation so it doesn't open modal
   card.querySelector('.btn-buy').addEventListener('click', (e) => {
     e.stopPropagation();
-    handleBuyNow(game);
+    if (!oos) handleBuyNow(game);
   });
+
+  // Clicking the card body opens modal
+  card.addEventListener('click', () => openModal(game));
 
   return card;
 }
@@ -197,7 +212,11 @@ function renderGrid() {
   DOM.gameGrid.innerHTML = '';
   DOM.emptyState.hidden = true;
 
-  const games = state.filtered;
+  // Sort: out-of-stock games always last
+  const games = [...state.filtered].sort((a, b) => {
+    if (!!a.isOutOfStock === !!b.isOutOfStock) return 0;
+    return a.isOutOfStock ? 1 : -1;
+  });
 
   if (games.length === 0) {
     DOM.emptyState.hidden = false;
@@ -217,17 +236,20 @@ function renderGrid() {
 
 /* ── Filter & Search ── */
 function applyFilters() {
-  const q = state.searchQuery.toLowerCase().trim();
-  const f = state.activeFilter;
+  const q  = state.searchQuery.toLowerCase().trim();
+  const pf = state.activePlatform;
+  const gf = state.activeGenre;
 
   state.filtered = state.games.filter(g => {
-    const matchFilter = f === 'All' || g.category === f;
-    const matchSearch = !q ||
+    const matchPlatform = pf === 'All' || g.category === pf;
+    const matchGenre    = gf === 'All' || (g.genres && g.genres.map(x => x.toLowerCase()).includes(gf.toLowerCase()));
+    const matchSearch   = !q ||
       g.title.toLowerCase().includes(q) ||
       g.description.toLowerCase().includes(q) ||
       (g.platform && g.platform.toLowerCase().includes(q)) ||
-      (g.region && g.region.toLowerCase().includes(q));
-    return matchFilter && matchSearch;
+      (g.region && g.region.toLowerCase().includes(q)) ||
+      (g.genres && g.genres.join(' ').toLowerCase().includes(q));
+    return matchPlatform && matchGenre && matchSearch;
   });
 
   renderGrid();
@@ -235,13 +257,49 @@ function applyFilters() {
 
 /* exposed for inline onclick on empty state button */
 window.resetFilters = function () {
-  state.activeFilter = 'All';
-  state.searchQuery = '';
+  state.activePlatform = 'All';
+  state.activeGenre    = 'All';
+  state.searchQuery    = '';
   DOM.searchInput.value = '';
   DOM.searchClear.classList.remove('visible');
   DOM.filterBtns.forEach(b => b.classList.toggle('active', b.dataset.filter === 'All'));
+  document.querySelectorAll('#filters-genre .filter-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.filter === 'All'));
   applyFilters();
 };
+
+/* ── Build genre filter pills from JSON data ── */
+function buildGenreFilters(games) {
+  if (!DOM.filtersGenre) return;
+  const allGenres = new Set();
+  games.forEach(g => (g.genres || []).forEach(genre => allGenres.add(genre)));
+  if (allGenres.size === 0) { DOM.filtersGenre.style.display = 'none'; return; }
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-btn active';
+  allBtn.dataset.filter = 'All';
+  allBtn.dataset.filterType = 'genre';
+  allBtn.textContent = 'All Genres';
+  DOM.filtersGenre.appendChild(allBtn);
+
+  [...allGenres].sort().forEach(genre => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.dataset.filter = genre;
+    btn.dataset.filterType = 'genre';
+    btn.textContent = genre;
+    DOM.filtersGenre.appendChild(btn);
+  });
+
+  DOM.filtersGenre.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    DOM.filtersGenre.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.activeGenre = btn.dataset.filter;
+    applyFilters();
+  });
+}
 
 /* ── Event: Filters ── */
 function initFilters() {
@@ -249,7 +307,7 @@ function initFilters() {
     btn.addEventListener('click', () => {
       DOM.filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      state.activeFilter = btn.dataset.filter;
+      state.activePlatform = btn.dataset.filter;
       applyFilters();
     });
   });
@@ -309,6 +367,101 @@ function escHtml(str) {
   return d.innerHTML;
 }
 
+/* ── Modal ── */
+function openModal(game) {
+  state.modalGame = game;
+  const o = DOM.modalOverlay;
+  const discount = calcDiscount(game.originalPrice, game.price);
+  const oos = !!game.isOutOfStock;
+  const regionClass = game.highlightRegion ? 'tag tag-region tag-region-highlight' : 'tag tag-region';
+
+  // Cover image
+  $('modal-img').src = game.image;
+  $('modal-img').alt = game.title + ' cover';
+
+  // Pricing
+  $('modal-pricing').innerHTML = `
+    <span class="modal-price-current">${formatPrice(game.price)}</span>
+    ${discount ? `<span class="modal-price-original">${formatPrice(game.originalPrice)}</span>
+                  <span class="modal-price-save">SAVE ${discount}%</span>` : ''}
+  `;
+
+  // Buy button
+  const buyBtn = $('modal-buy-btn');
+  buyBtn.textContent = oos ? '⛔ Out of Stock'
+    : (game.checkoutMethod === 'google_form' ? '📋 Order via Form' : '💬 DM to Buy');
+  buyBtn.disabled = oos;
+  buyBtn.onclick  = oos ? null : () => handleBuyNow(game);
+
+  // Badges
+  const badgeHtml = [
+    game.dealBadge ? `<span class="card-badge ${badgeClass(game.dealBadge)}" style="position:static">${escHtml(game.dealBadge)}</span>` : '',
+    oos ? `<span class="card-badge sale" style="position:static">OUT OF STOCK</span>` : '',
+  ].join('');
+  $('modal-badges').innerHTML = badgeHtml;
+
+  // Title + desc
+  $('modal-title').textContent = game.title;
+  $('modal-desc').textContent  = game.description;
+
+  // Tags
+  $('modal-tags').innerHTML = `
+    ${game.platform ? `<span class="tag tag-platform">${escHtml(game.platform)}</span>` : ''}
+    ${game.region   ? `<span class="${regionClass}">🌍 ${escHtml(game.region)}</span>` : ''}
+    ${game.stock === 'Low Stock' ? `<span class="tag tag-stock-low">⚡ Low Stock</span>` : ''}
+  `;
+
+  // Accordion sections
+  const sections = [];
+  if (game.genres?.length)  sections.push({ title: '🎭 Genres',     content: game.genres.map(g => `<span class="acc-pill">${escHtml(g)}</span>`).join('') });
+  if (game.developer || game.publisher || game.releaseDate) {
+    const rows = [
+      game.developer   ? `<div class="acc-row"><strong>Developer</strong>${escHtml(game.developer)}</div>`   : '',
+      game.publisher   ? `<div class="acc-row"><strong>Publisher</strong>${escHtml(game.publisher)}</div>`   : '',
+      game.releaseDate ? `<div class="acc-row"><strong>Release</strong>${escHtml(game.releaseDate)}</div>`   : '',
+    ].join('');
+    sections.push({ title: '🏢 Developer Info', content: rows });
+  }
+  if (game.audioLanguages || game.textLanguages) {
+    const rows = [
+      game.audioLanguages ? `<div class="acc-row"><strong>Audio</strong>${escHtml(game.audioLanguages)}</div>` : '',
+      game.textLanguages  ? `<div class="acc-row"><strong>Text</strong>${escHtml(game.textLanguages)}</div>`  : '',
+    ].join('');
+    sections.push({ title: '🌐 Languages', content: rows });
+  }
+  if (game.gameModes)   sections.push({ title: '👥 Game Modes',   content: game.gameModes.split(',').map(m => `<span class="acc-pill">${escHtml(m.trim())}</span>`).join('') });
+  if (game.pcFeatures)  sections.push({ title: '🖥️ PC Features',  content: game.pcFeatures.split(',').map(f => `<span class="acc-pill">${escHtml(f.trim())}</span>`).join('') });
+  if (game.workingRegions) sections.push({ title: '✅ Working Regions', content: `<div class="acc-row">${escHtml(game.workingRegions)}</div>` });
+
+  const accordion = $('modal-accordion');
+  accordion.innerHTML = sections.map((s, i) => `
+    <div class="accordion-item${i === 0 ? ' open' : ''}">
+      <button class="accordion-trigger" onclick="toggleAccordion(this)">
+        ${s.title} <span class="acc-arrow">▶</span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-content">${s.content}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Show
+  o.hidden = false;
+  requestAnimationFrame(() => o.classList.add('open'));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  const o = DOM.modalOverlay;
+  o.classList.remove('open');
+  document.body.style.overflow = '';
+  o.addEventListener('transitionend', () => { o.hidden = true; }, { once: true });
+}
+
+function toggleAccordion(trigger) {
+  trigger.closest('.accordion-item').classList.toggle('open');
+}
+
 /* ── Main: Fetch & Init ── */
 async function init() {
   try {
@@ -334,10 +487,22 @@ async function init() {
     DOM.gridLoading?.remove();
     renderGrid();
 
+    // Build dynamic genre filters
+    buildGenreFilters(state.games);
+
     // Events
     initFilters();
     initSearch();
     initHamburger();
+
+    // Modal close events
+    DOM.modalClose.addEventListener('click', closeModal);
+    DOM.modalOverlay.addEventListener('click', (e) => {
+      if (e.target === DOM.modalOverlay) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !DOM.modalOverlay.hidden) closeModal();
+    });
 
   } catch (err) {
     console.error('WAGD: Failed to load games.json →', err);
