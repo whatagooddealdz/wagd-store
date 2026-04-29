@@ -9,8 +9,7 @@
 const state = {
   games:           [],
   filtered:        [],
-  activePlatform:  'All',
-  activeGenre:     'All',
+  activeFilter:    'All',
   searchQuery:     '',
   instagramHandle: 'myusername',
   modalGame:       null,
@@ -35,12 +34,10 @@ const DOM = {
   searchInput:      $('search-input'),
   searchClear:      $('search-clear'),
   filterBtns:       $$('.filter-btn'),
-  filtersGenre:     $('filters-genre'),
   hamburger:        $('hamburger'),
   mobileNav:        $('mobile-nav'),
   toast:            $('toast'),
   modalOverlay:     $('modal-overlay'),
-  modalPanel:       $('modal-panel'),
   modalClose:       $('modal-close'),
 };
 
@@ -144,14 +141,16 @@ function renderDotw(game) {
 
 /* ── Render: Tags ── */
 function renderTags(game) {
-  const stockTag = game.stock === 'Low Stock'
+  const stockTag    = game.stock === 'Low Stock'
     ? `<span class="tag tag-stock-low">⚡ Low Stock</span>`
     : '';
-  const regionClass = game.highlightRegion ? 'tag-region tag-region-highlight' : 'tag-region';
+  const regionClass = game.highlightRegion
+    ? 'tag tag-region tag-region-highlight'
+    : 'tag tag-region';
   return `
     <div class="card-tags">
       ${game.platform ? `<span class="tag tag-platform">${escHtml(game.platform)}</span>` : ''}
-      ${game.region   ? `<span class="tag ${regionClass}">🌍 ${escHtml(game.region)}</span>` : ''}
+      ${game.region   ? `<span class="${regionClass}">🌍 ${escHtml(game.region)}</span>` : ''}
       ${stockTag}
     </div>
   `;
@@ -159,10 +158,14 @@ function renderTags(game) {
 
 /* ── Render: Game Card ── */
 function renderCard(game) {
-  const discount = calcDiscount(game.originalPrice, game.price);
-  const badge    = game.dealBadge;
-  const bClass   = badgeClass(badge);
-  const oos      = !!game.isOutOfStock;
+  const discount   = calcDiscount(game.originalPrice, game.price);
+  const badge      = game.dealBadge;
+  const bClass     = badgeClass(badge);
+  const oos        = !!game.isOutOfStock;
+  // Support both single image string and images array — first image is cover
+  const coverImg   = Array.isArray(game.images) && game.images.length
+    ? game.images[0]
+    : (game.image || '');
 
   const card = document.createElement('article');
   card.className = `game-card${oos ? ' out-of-stock' : ''}`;
@@ -172,9 +175,9 @@ function renderCard(game) {
 
   card.innerHTML = `
     <div class="card-img-wrap">
-      <img src="${game.image}" alt="${escHtml(game.title)} game cover" loading="lazy" />
+      <img src="${escHtml(coverImg)}" alt="${escHtml(game.title)} game cover" loading="lazy" />
       ${badge ? `<span class="card-badge ${bClass}">${escHtml(badge)}</span>` : ''}
-      ${oos ? `<div class="badge-oos">Out of Stock</div>` : ''}
+      ${oos    ? `<div class="badge-oos">Out of Stock</div>` : ''}
     </div>
     <div class="card-body">
       <h3 class="card-title">${escHtml(game.title)}</h3>
@@ -194,13 +197,13 @@ function renderCard(game) {
     </div>
   `;
 
-  // Buy button — stop propagation so it doesn't open modal
+  // Buy button stops propagation so it never triggers modal
   card.querySelector('.btn-buy').addEventListener('click', (e) => {
     e.stopPropagation();
     if (!oos) handleBuyNow(game);
   });
 
-  // Clicking the card body opens modal
+  // Clicking anywhere else on the card opens modal
   card.addEventListener('click', () => openModal(game));
 
   return card;
@@ -212,7 +215,7 @@ function renderGrid() {
   DOM.gameGrid.innerHTML = '';
   DOM.emptyState.hidden = true;
 
-  // Sort: out-of-stock games always last
+  // Out-of-stock games always sink to the bottom
   const games = [...state.filtered].sort((a, b) => {
     if (!!a.isOutOfStock === !!b.isOutOfStock) return 0;
     return a.isOutOfStock ? 1 : -1;
@@ -236,25 +239,22 @@ function renderGrid() {
 
 /* ── Filter & Search ── */
 function applyFilters() {
-  const q  = state.searchQuery.toLowerCase().trim();
-  const pf = state.activePlatform;
-  const gf = state.activeGenre;
+  const q = state.searchQuery.toLowerCase().trim();
+  const f = state.activeFilter;
 
   state.filtered = state.games.filter(g => {
-    const matchPlatform = pf === 'All' || g.category === pf;
-    const matchGenre    = gf === 'All' || (g.genres && g.genres.map(x => x.toLowerCase()).includes(gf.toLowerCase()));
-    const matchSearch   = !q ||
+    const matchFilter = f === 'All' || g.category === f;
+    const matchSearch = !q ||
       g.title.toLowerCase().includes(q) ||
       g.description.toLowerCase().includes(q) ||
       (g.platform && g.platform.toLowerCase().includes(q)) ||
-      (g.region && g.region.toLowerCase().includes(q)) ||
-      (g.genres && g.genres.join(' ').toLowerCase().includes(q));
-    return matchPlatform && matchGenre && matchSearch;
+      (g.region   && g.region.toLowerCase().includes(q)) ||
+      (Array.isArray(g.genres) && g.genres.join(' ').toLowerCase().includes(q));
+    return matchFilter && matchSearch;
   });
 
   renderGrid();
 }
-
 /* exposed for inline onclick on empty state button */
 window.resetFilters = function () {
   state.activePlatform = 'All';
@@ -456,6 +456,191 @@ function closeModal() {
   o.classList.remove('open');
   document.body.style.overflow = '';
   o.addEventListener('transitionend', () => { o.hidden = true; }, { once: true });
+}
+
+function toggleAccordion(trigger) {
+  trigger.closest('.accordion-item').classList.toggle('open');
+}
+
+/* ── Modal ── */
+let sliderIndex = 0;
+
+function openModal(game) {
+  state.modalGame = game;
+  const oos        = !!game.isOutOfStock;
+  const discount   = calcDiscount(game.originalPrice, game.price);
+  const regionClass = game.highlightRegion
+    ? 'tag tag-region tag-region-highlight'
+    : 'tag tag-region';
+
+  // Build images array — support legacy single `image` field
+  const images = Array.isArray(game.images) && game.images.length
+    ? game.images
+    : (game.image ? [game.image] : []);
+  sliderIndex = 0;
+
+  // ── Slider ──────────────────────────────────────────────
+  const sliderHtml = images.length > 1
+    ? `<div class="modal-slider">
+         <img class="modal-slide-img" id="modal-slide-img" src="${escHtml(images[0])}" alt="${escHtml(game.title)}" />
+         <div class="slider-controls">
+           <button class="slider-btn" id="slider-prev" onclick="slideModal(-1)">‹</button>
+           <span class="slider-counter" id="slider-counter">1 / ${images.length}</span>
+           <button class="slider-btn" id="slider-next" onclick="slideModal(1)">›</button>
+         </div>
+         <div class="slider-dots" id="slider-dots">
+           ${images.map((_, i) => `<button class="slider-dot${i === 0 ? ' active' : ''}" onclick="goSlide(${i})"></button>`).join('')}
+         </div>
+       </div>`
+    : `<div class="modal-slider">
+         <img class="modal-slide-img" src="${escHtml(images[0] || '')}" alt="${escHtml(game.title)}" />
+       </div>`;
+
+  // ── Pricing ─────────────────────────────────────────────
+  const pricingHtml = `
+    <span class="modal-price-current">${formatPrice(game.price)}</span>
+    ${discount
+      ? `<span class="modal-price-original">${formatPrice(game.originalPrice)}</span>
+         <span class="modal-price-save">SAVE ${discount}%</span>`
+      : ''}
+  `;
+
+  // ── Badges ──────────────────────────────────────────────
+  const badgeHtml = [
+    game.dealBadge ? `<span class="card-badge ${badgeClass(game.dealBadge)}" style="position:static">${escHtml(game.dealBadge)}</span>` : '',
+    oos            ? `<span class="card-badge sale" style="position:static">OUT OF STOCK</span>` : '',
+  ].join('');
+
+  // ── Tags ────────────────────────────────────────────────
+  const tagsHtml = [
+    game.platform ? `<span class="tag tag-platform">${escHtml(game.platform)}</span>` : '',
+    game.region   ? `<span class="${regionClass}">🌍 ${escHtml(game.region)}</span>` : '',
+    game.stock === 'Low Stock' ? `<span class="tag tag-stock-low">⚡ Low Stock</span>` : '',
+  ].join('');
+
+  // ── Accordion sections ───────────────────────────────────
+  const sections = [];
+  if (game.genres?.length) {
+    sections.push({
+      title:   '🎭 Genres',
+      content: game.genres.map(g => `<span class="acc-pill">${escHtml(g)}</span>`).join(''),
+    });
+  }
+  if (game.developer || game.publisher || game.releaseDate) {
+    sections.push({
+      title: '🏢 Developer Info',
+      content: [
+        game.developer   ? `<div class="acc-row"><strong>Developer</strong>${escHtml(game.developer)}</div>`   : '',
+        game.publisher   ? `<div class="acc-row"><strong>Publisher</strong>${escHtml(game.publisher)}</div>`   : '',
+        game.releaseDate ? `<div class="acc-row"><strong>Release</strong>${escHtml(game.releaseDate)}</div>`   : '',
+      ].join(''),
+    });
+  }
+  if (game.audioLanguages || game.textLanguages) {
+    sections.push({
+      title: '🌐 Languages',
+      content: [
+        game.audioLanguages ? `<div class="acc-row"><strong>Audio</strong>${escHtml(game.audioLanguages)}</div>` : '',
+        game.textLanguages  ? `<div class="acc-row"><strong>Text</strong>${escHtml(game.textLanguages)}</div>`  : '',
+      ].join(''),
+    });
+  }
+  if (game.gameModes) {
+    sections.push({
+      title:   '👥 Game Modes',
+      content: game.gameModes.split(',').map(m => `<span class="acc-pill">${escHtml(m.trim())}</span>`).join(''),
+    });
+  }
+  if (game.pcFeatures) {
+    sections.push({
+      title:   '🖥️ PC Features',
+      content: game.pcFeatures.split(',').map(f => `<span class="acc-pill">${escHtml(f.trim())}</span>`).join(''),
+    });
+  }
+  if (game.workingRegions) {
+    sections.push({
+      title:   '✅ Working Regions',
+      content: `<div class="acc-row">${escHtml(game.workingRegions)}</div>`,
+    });
+  }
+
+  const accordionHtml = sections.map((s, i) => `
+    <div class="accordion-item${i === 0 ? ' open' : ''}">
+      <button class="accordion-trigger" onclick="toggleAccordion(this)">
+        ${s.title} <span class="acc-arrow">▶</span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-content">${s.content}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // ── Inject HTML into modal shell ─────────────────────────
+  const panel = document.getElementById('modal-panel');
+  panel.innerHTML = `
+    <button class="modal-close" id="modal-close-btn" aria-label="Close">✕</button>
+    <div class="modal-inner">
+      <div class="modal-img-col">
+        ${sliderHtml}
+        <div class="modal-pricing">${pricingHtml}</div>
+        <button class="btn-buy modal-buy-btn" id="modal-buy-btn" ${oos ? 'disabled' : ''}>
+          ${oos ? '⛔ Out of Stock' : (game.checkoutMethod === 'google_form' ? '📋 Order via Form' : '💬 DM to Buy')}
+        </button>
+      </div>
+      <div class="modal-info-col">
+        <div class="modal-badges">${badgeHtml}</div>
+        <h2 class="modal-title">${escHtml(game.title)}</h2>
+        <p class="modal-desc">${escHtml(game.description)}</p>
+        <div class="modal-tags">${tagsHtml}</div>
+        <div class="accordion">${accordionHtml}</div>
+      </div>
+    </div>
+  `;
+
+  // Wire close button and buy button after innerHTML is set
+  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  if (!oos) {
+    document.getElementById('modal-buy-btn').addEventListener('click', () => handleBuyNow(game));
+  }
+
+  // Show overlay
+  const overlay = DOM.modalOverlay;
+  overlay.hidden = false;
+  requestAnimationFrame(() => overlay.classList.add('open'));
+  document.body.style.overflow = 'hidden';
+
+  // Store images array for slider functions
+  overlay._images = images;
+}
+
+function closeModal() {
+  const overlay = DOM.modalOverlay;
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  overlay.addEventListener('transitionend', () => { overlay.hidden = true; }, { once: true });
+}
+
+function slideModal(direction) {
+  const images = DOM.modalOverlay._images;
+  if (!images || images.length < 2) return;
+  sliderIndex = (sliderIndex + direction + images.length) % images.length;
+  _updateSlider(images);
+}
+
+function goSlide(index) {
+  const images = DOM.modalOverlay._images;
+  if (!images) return;
+  sliderIndex = index;
+  _updateSlider(images);
+}
+
+function _updateSlider(images) {
+  const img     = document.getElementById('modal-slide-img');
+  const counter = document.getElementById('slider-counter');
+  const dots    = document.querySelectorAll('.slider-dot');
+  if (img)     img.src = images[sliderIndex];
+  if (counter) counter.textContent = `${sliderIndex + 1} / ${images.length}`;
+  dots.forEach((d, i) => d.classList.toggle('active', i === sliderIndex));
 }
 
 function toggleAccordion(trigger) {
