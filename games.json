@@ -19,22 +19,6 @@
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     },
     {
-      "id": 2,
-      "title": "Webbed",
-      "image": "images/Webbed.jpg",
-      "description": "Swing through the trees as a happy little spider! Physics-based web-slinging in a charming world full of bugs and wonder.",
-      "platform": "Steam",
-      "category": "Steam",
-      "region": "Global",
-      "stock": "Low Stock",
-      "price": 1000,
-      "originalPrice": 1500,
-      "dealBadge": null,
-      "isDealOfTheWeek": false,
-      "checkoutMethod": "instagram",
-      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
-    },
-    {
       "id": 4,
       "title": "Hollow Knight: Silksong",
       "image": "https://placehold.co/400x560/1a1a2e/00FF00?text=Silksong&font=oswald",
@@ -46,6 +30,22 @@
       "price": 3500,
       "originalPrice": 5000,
       "dealBadge": "Coming soon",
+      "isDealOfTheWeek": false,
+      "checkoutMethod": "instagram",
+      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
+    },
+    {
+      "id": 2,
+      "title": "Webbed",
+      "image": "images/Webbed.jpg",
+      "description": "Swing through the trees as a happy little spider! Physics-based web-slinging in a charming world full of bugs and wonder.",
+      "platform": "Steam",
+      "category": "Steam",
+      "region": "Global",
+      "stock": "Low Stock",
+      "price": 1000,
+      "originalPrice": 1500,
+      "dealBadge": null,
       "isDealOfTheWeek": false,
       "checkoutMethod": "instagram",
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
