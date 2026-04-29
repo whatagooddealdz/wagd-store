@@ -351,7 +351,7 @@
       "originalPrice": 4250,
       "dealBadge": null,
       "isDealOfTheWeek": false,
-      "isOutOfStock": true,
+      "isOutOfStock": false,
       "highlightRegion": true,
       "workingRegions": null,
       "genres": [
