@@ -136,15 +136,17 @@
       <div class="section-container">
         <h2 class="section-title">Game Catalog</h2>
 
-        <!-- Filters -->
+        <!-- Platform Filters (static) -->
         <div class="filters" id="filters" role="group" aria-label="Filter by platform">
-          <button class="filter-btn active" data-filter="All">All</button>
-          <button class="filter-btn" data-filter="Xbox">Xbox</button>
-          <button class="filter-btn" data-filter="Steam">Steam</button>
-          <button class="filter-btn" data-filter="Steam">PC</button>
-          <button class="filter-btn" data-filter="Steam">Mobile</button>
-          <button class="filter-btn" data-filter="Steam">MAC</button>
+          <button class="filter-btn active" data-filter-type="platform" data-filter="All">All</button>
+          <button class="filter-btn" data-filter-type="platform" data-filter="PC">PC</button>
+          <button class="filter-btn" data-filter-type="platform" data-filter="Xbox">Xbox</button>
+          <button class="filter-btn" data-filter-type="platform" data-filter="Mac">Mac</button>
+          <button class="filter-btn" data-filter-type="platform" data-filter="Mobile">Mobile</button>
         </div>
+
+        <!-- Genre Filters (populated dynamically by app.js) -->
+        <div class="filters filters-genre" id="filters-genre" role="group" aria-label="Filter by genre" style="margin-top:8px;"></div>
 
         <!-- Results count -->
         <p class="results-count" id="results-count" aria-live="polite"></p>
@@ -169,6 +171,33 @@
     </section>
 
   </main>
+
+  <!-- ░░ GAME DETAIL MODAL ░░ -->
+  <div class="modal-overlay" id="modal-overlay" aria-modal="true" role="dialog" aria-label="Game details" hidden>
+    <div class="modal-panel" id="modal-panel">
+      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+
+      <div class="modal-inner">
+        <!-- Left: image -->
+        <div class="modal-img-col">
+          <img id="modal-img" src="" alt="" class="modal-cover" />
+          <div class="modal-pricing" id="modal-pricing"></div>
+          <button class="btn-buy modal-buy-btn" id="modal-buy-btn"></button>
+        </div>
+
+        <!-- Right: details -->
+        <div class="modal-info-col">
+          <div class="modal-badges" id="modal-badges"></div>
+          <h2 class="modal-title" id="modal-title"></h2>
+          <p class="modal-desc" id="modal-desc"></p>
+          <div class="modal-tags" id="modal-tags"></div>
+
+          <!-- Accordion sections -->
+          <div class="accordion" id="modal-accordion"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ░░ FOOTER ░░ -->
   <footer class="site-footer">
