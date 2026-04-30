@@ -6,6 +6,10 @@
   <title>WAGD — What A Good Deal! | Game Keys in DZD</title>
   <meta name="description" content="Premium game keys at unbeatable DZD prices. Xbox, PlayStation, Steam & Indie titles. Pay via CCP. Order via DM or form." />
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/Symbol.png" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
@@ -14,17 +18,18 @@
 </head>
 <body>
 
+  <!-- ░░ ANNOUNCEMENT BAR ░░ -->
   <div id="announcement-bar" class="announcement-bar" role="banner" aria-label="Site announcement">
     <span id="announcement-text">Loading...</span>
     <button id="dismiss-announcement" class="dismiss-btn" aria-label="Dismiss announcement">✕</button>
   </div>
 
+  <!-- ░░ STICKY HEADER ░░ -->
   <header class="site-header" id="site-header">
     <div class="header-inner">
 
       <a href="#" class="logo" aria-label="WAGD Home">
-        <span class="logo-accent">W</span>AGD
-        <span class="logo-sub">WHAT A GOOD DEAL</span>
+        <img src="images/logo.png" alt="WAGD Logo" class="header-logo-img" />
       </a>
 
       <div class="search-wrap">
@@ -54,6 +59,7 @@
       </button>
     </div>
 
+    <!-- Mobile nav -->
     <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
       <a href="#catalog" class="mobile-nav-link">Catalog</a>
       <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
@@ -63,6 +69,7 @@
 
   <main>
 
+    <!-- ░░ HERO ░░ -->
     <section class="hero" id="hero">
       <div class="hero-grid-bg" aria-hidden="true"></div>
       <div class="scanline" aria-hidden="true"></div>
@@ -84,17 +91,20 @@
       </div>
     </section>
 
+    <!-- ░░ DEAL OF THE WEEK ░░ -->
     <section class="dotw-section" id="deal-of-the-week">
       <div class="dotw-inner">
         <div class="dotw-label-wrap">
           <span class="dotw-label">⚡ DEAL OF THE WEEK</span>
         </div>
         <div class="dotw-card" id="dotw-card">
+          <!-- Rendered by JS -->
           <div class="dotw-loading">Loading deal...</div>
         </div>
       </div>
     </section>
 
+    <!-- ░░ HOW IT WORKS ░░ -->
     <section class="how-section" id="how-it-works">
       <div class="section-container">
         <h2 class="section-title">How It Works</h2>
@@ -123,10 +133,12 @@
       </div>
     </section>
 
+    <!-- ░░ CATALOG ░░ -->
     <section class="catalog-section" id="catalog">
       <div class="section-container">
         <h2 class="section-title">Game Catalog</h2>
 
+        <!-- Filters -->
         <div class="filters" id="filters" role="group" aria-label="Filter by platform">
           <button class="filter-btn active" data-filter="All">All</button>
           <button class="filter-btn" data-filter="Xbox">Xbox</button>
@@ -136,8 +148,10 @@
           <button class="filter-btn" data-filter="Software">Software</button>
         </div>
 
+        <!-- Results count -->
         <p class="results-count" id="results-count" aria-live="polite"></p>
 
+        <!-- Grid -->
         <div class="game-grid" id="game-grid" aria-label="Game catalog">
           <div class="grid-loading" id="grid-loading">
             <span class="loading-dot"></span>
@@ -146,6 +160,7 @@
           </div>
         </div>
 
+        <!-- Empty state -->
         <div class="empty-state" id="empty-state" hidden>
           <p class="empty-icon">🎮</p>
           <h3>No games found</h3>
@@ -157,10 +172,11 @@
 
   </main>
 
+  <!-- ░░ FOOTER ░░ -->
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
-        <span class="logo">W<span class="logo-accent-sm">A</span>GD</span>
+        <img src="images/writing for the site png (1).png" alt="WAGD" class="footer-logo-img" />
         <p>What A Good Deal! — Algeria's premium game key store.<br />All keys are legitimate. All prices in DZD.</p>
       </div>
       <div class="footer-links">
@@ -179,14 +195,17 @@
     </div>
   </footer>
 
+  <!-- ░░ TOOLTIP / TOAST ░░ -->
   <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
 
+  <!-- ░░ GAME DETAILS MODAL ░░ -->
   <div id="game-modal" class="modal" hidden aria-hidden="true">
     <div class="modal-backdrop" id="modal-backdrop"></div>
     <div class="modal-content">
       <button class="modal-close" id="modal-close" aria-label="Close modal">✕</button>
       <div class="modal-body" id="modal-body">
-        </div>
+        <!-- Injected via JS -->
+      </div>
     </div>
   </div>
 

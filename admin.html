@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WAGD Admin — Dashboard</title>
+  
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/Symbol.png">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -111,13 +114,10 @@
     }
 
     .login-logo {
-      font-family: var(--font-head);
-      font-size: 42px;
-      font-weight: 700;
-      color: #fff;
+      display: flex;
+      align-items: center;
       margin-bottom: 4px;
     }
-    .login-logo span { color: var(--neon); text-shadow: var(--neon-glow); }
 
     .login-subtitle {
       font-size: 12px;
@@ -325,15 +325,10 @@
     }
 
     .topbar-brand {
-      font-family: var(--font-head);
-      font-size: 26px;
-      font-weight: 700;
-      color: #fff;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .topbar-brand span { color: var(--neon); }
     .topbar-badge {
       font-size: 10px;
       font-weight: 600;
@@ -857,11 +852,18 @@
 </head>
 <body>
 
+<!-- =====================================================
+     LOGIN SCREEN
+===================================================== -->
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-logo"><span>W</span>AGD <span style="font-size:20px;color:#777;">Admin</span></div>
+    <div class="login-logo">
+      <img src="images/logo.png" alt="WAGD Logo" style="height: 50px; object-fit: contain;" />
+      <span style="font-size:20px;color:#777; margin-left: 8px;">Admin</span>
+    </div>
     <p class="login-subtitle">Store Management Portal</p>
 
+    <!-- HOW TO GET YOUR PAT — Read this carefully! -->
     <div class="login-instructions">
       <strong>🔑 How to get your GitHub Token (do this once):</strong>
       <ol>
@@ -899,11 +901,16 @@
   </div>
 </div>
 
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
 <div id="dashboard">
 
+  <!-- Top bar -->
   <div class="topbar">
     <div class="topbar-brand">
-      <span>W</span>AGD <div class="topbar-badge">Admin</div>
+      <img src="images/logo.png" alt="WAGD" style="height: 24px; object-fit: contain;" /> 
+      <div class="topbar-badge">Admin</div>
     </div>
     <div class="topbar-right">
       <span class="topbar-user">Logged in as <strong id="dash-username">—</strong></span>
@@ -911,10 +918,13 @@
     </div>
   </div>
 
+  <!-- Body -->
   <div class="dash-body">
 
+    <!-- ── Sidebar ── -->
     <aside class="sidebar">
 
+      <!-- Announcement Manager -->
       <div class="announce-manager">
         <p class="sidebar-section-title">📢 Announcement Bar</p>
         <div class="field-group">
@@ -928,6 +938,7 @@
 
       <hr style="border:none;border-top:1px solid var(--border);" />
 
+      <!-- Add / Edit Game Form -->
       <div class="add-form-wrap">
         <div class="form-section-title">
           <span id="form-mode-label">Add Game</span>
@@ -952,6 +963,7 @@
               <input type="file" id="f-image-file" accept="image/*" multiple style="display:none" onchange="handleImageUpload(this)" />
               <div id="upload-preview-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;"></div>
               <span class="upload-status" id="upload-status"></span>
+              <!-- Hidden field stores JSON array of uploaded URLs -->
               <input type="hidden" id="f-images" />
             </div>
           </div>
@@ -995,6 +1007,7 @@
             </select>
           </div>
 
+          <!-- Out of Stock toggle -->
           <div class="field-group">
             <label>Out of Stock</label>
             <div class="toggle-wrap" onclick="toggleOutOfStock()">
@@ -1004,6 +1017,7 @@
             <input type="hidden" id="f-oos" value="false" />
           </div>
 
+          <!-- Highlight Region toggle -->
           <div class="field-group span-2">
             <label>Highlight Region (shows orange)</label>
             <div class="toggle-wrap" onclick="toggleHighlightRegion()">
@@ -1013,11 +1027,13 @@
             <input type="hidden" id="f-highlight-region" value="false" />
           </div>
 
+          <!-- Working Regions -->
           <div class="field-group span-2">
             <label>Working Regions</label>
             <input type="text" id="f-working-regions" placeholder="e.g. DZ, FR, US, UK" />
           </div>
 
+          <!-- Collapsible detail fields -->
           <div class="span-2">
             <button type="button" class="detail-fields-toggle" id="detail-toggle" onclick="toggleDetailFields()">
               <span class="arrow">▶</span> Optional Game Details (Genres, Languages, Developer…)
@@ -1065,7 +1081,9 @@
               <input type="text" id="f-game-modes" placeholder="Single-player, Multiplayer, Co-op…" />
             </div>
 
-          </div><div class="field-group span-2">
+          </div><!-- end detail-fields-wrap -->
+
+          <div class="field-group span-2">
             <label>Description <span class="required">*</span></label>
             <textarea id="f-description" placeholder="Short description..." rows="3"></textarea>
           </div>
@@ -1082,6 +1100,8 @@
               <option value="google_form">📋 Google Form</option>
             </select>
           </div>
+
+          <!-- Checkout link is now auto-filled from global constants — no manual input needed -->
 
           <div class="field-group span-2">
             <div class="toggle-wrap" onclick="toggleDotw()">
@@ -1103,8 +1123,10 @@
       </div>
     </aside>
 
+    <!-- ── Main Content ── -->
     <main class="main-content">
 
+      <!-- Stats -->
       <div class="stats-bar" id="stats-bar">
         <div class="stat-card">
           <div class="stat-label">Total Games</div>
@@ -1128,6 +1150,7 @@
         </div>
       </div>
 
+      <!-- Inventory -->
       <div class="section-header">
         <h2>🎮 Game Inventory</h2>
         <button class="btn btn-secondary btn-sm" onclick="loadData(true)">
@@ -1145,6 +1168,7 @@
     </main>
   </div>
 
+  <!-- Status bar -->
   <div class="status-bar">
     <div class="status-dot ok" id="conn-dot"></div>
     <span id="status-text">Connected</span>
@@ -1152,8 +1176,10 @@
   </div>
 </div>
 
+<!-- Toast container -->
 <div class="toast-container" id="toast-container"></div>
 
+<!-- Confirm dialog (hidden by default) -->
 <div class="overlay hidden" id="confirm-overlay">
   <div class="dialog">
     <div class="dialog-title" id="dialog-title">Confirm</div>
@@ -1165,6 +1191,9 @@
   </div>
 </div>
 
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
 <script>
 'use strict';
 
@@ -1503,6 +1532,14 @@ async function handleImageUpload(input) {
 
   const status      = document.getElementById('upload-status');
   const hidden      = document.getElementById('f-images');
+
+  // Safeguard check for missing API Key
+  if (IMGBB_API_KEY === 'YOUR_IMGBB_API_KEY_HERE') {
+      status.textContent = '⚠️ Upload failed: You need to add your ImgBB API Key in admin.html';
+      status.className = 'upload-status err';
+      alert('WARNING: You need to replace the placeholder IMGBB_API_KEY inside admin.html with your actual free API key from api.imgbb.com!');
+      return;
+  }
 
   status.textContent = `⏳ Uploading ${files.length} image(s)…`;
   status.className   = 'upload-status';

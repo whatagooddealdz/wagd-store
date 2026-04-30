@@ -148,6 +148,11 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   white-space: nowrap;
   flex-shrink: 0;
 }
+.header-logo-img {
+  height: 40px; /* Adjust size of top left logo here */
+  width: auto;
+  object-fit: contain;
+}
 .logo-accent { color: var(--neon); text-shadow: var(--shadow-neon); }
 .logo-sub {
   font-size: 7px;
@@ -963,12 +968,12 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   gap: 48px;
 }
 
-.footer-brand .logo {
-  font-size: 36px;
+.footer-brand .footer-logo-img {
+  height: 48px; /* Adjust footer logo size here */
+  width: auto;
+  object-fit: contain;
   margin-bottom: 14px;
-  display: inline-flex;
 }
-.logo-accent-sm { color: var(--neon); }
 
 .footer-brand p {
   font-size: 14px;
