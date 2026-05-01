@@ -116,7 +116,7 @@
       "stock": "In Stock",
       "price": 2400,
       "originalPrice": 2400,
-      "dealBadge": "Unbelievable DEAL OF THE WEEK",
+      "dealBadge": null,
       "isDealOfTheWeek": true,
       "isOutOfStock": false,
       "highlightRegion": false,
