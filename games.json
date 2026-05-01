@@ -16,7 +16,7 @@
       "stock": "Low Stock",
       "price": 8500,
       "originalPrice": 9000,
-      "dealBadge": null,
+      "dealBadge": "SLAM EDITION!",
       "isDealOfTheWeek": false,
       "isOutOfStock": false,
       "highlightRegion": false,
