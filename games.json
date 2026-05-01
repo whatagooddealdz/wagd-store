@@ -622,6 +622,50 @@
       "gameModes": null,
       "checkoutMethod": "instagram",
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
+    },
+    {
+      "id": 1777677420923,
+      "title": "AirportSim",
+      "image": "https://i.ibb.co/JWMCfcqs/header.jpg",
+      "images": [
+        "https://i.ibb.co/JWMCfcqs/header.jpg",
+        "https://i.ibb.co/xttVtjHP/2-1.png",
+        "https://i.ibb.co/35C5qMSr/3.png",
+        "https://i.ibb.co/twhy4065/9.png",
+        "https://i.ibb.co/MkZDdbCH/11-1.png",
+        "https://i.ibb.co/DHtJMXw4/18.png",
+        "https://i.ibb.co/jPwm8Nwm/22.png",
+        "https://i.ibb.co/bjWGJ9fX/24.png",
+        "https://i.ibb.co/B8HrQz8/1014-2.png",
+        "https://i.ibb.co/5hvLrw6B/1018.png",
+        "https://i.ibb.co/5W9LFDDK/1019-1.png"
+      ],
+      "description": "AirportSim is an Advanced Airport Ground Handling Simulator with true-to-life visuals and operations, licensed planes and vehicles, real airports and live weather conditions. Enjoy the many tasks alone or with friends, making this experience unforgettable.",
+      "platform": "Steam",
+      "category": "PC",
+      "region": "Global",
+      "stock": "Low Stock",
+      "price": 3400,
+      "originalPrice": 3400,
+      "dealBadge": "SIMULATION!",
+      "isDealOfTheWeek": false,
+      "isOutOfStock": false,
+      "highlightRegion": false,
+      "workingRegions": "DZ!",
+      "genres": [
+        "Casual",
+        "Indie",
+        "Simulation"
+      ],
+      "releaseDate": "Q2 2023",
+      "developer": "MS GAMES, MK Studios",
+      "publisher": "Iceberg Interactive",
+      "audioLanguages": "English",
+      "textLanguages": "English Polish German French Portuguese (Brazil) Spanish Italian Chinese (Simplified) Turkish Ukrainian",
+      "pcFeatures": "Full controller support DLSS DLSS Super Resolution",
+      "gameModes": "Single-player Online multiplayer Co-op Online Co-op",
+      "checkoutMethod": "instagram",
+      "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     }
   ]
 }
