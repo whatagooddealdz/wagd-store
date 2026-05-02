@@ -551,20 +551,20 @@
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     },
     {
-      "id": 1777237376290,
-      "title": "HMA! Pro VPN Shared Account 1 Year",
-      "image": "images/HMA! Pro VPN.jpg",
+      "id": 1777237645288,
+      "title": "Avast Premium Security MAC 1 Year",
+      "image": "images/Avast Premium Security 1 Device 1 Year Avast.jpg",
       "images": [
-        "images/HMA! Pro VPN.jpg"
+        "images/Avast Premium Security 1 Device 1 Year Avast.jpg"
       ],
-      "description": "Get it cheaper on Shared account! \nWorks on Windows only!",
-      "platform": "PC",
+      "description": "1 Device\nGet it on your Personal Account!\nFor MAC!",
+      "platform": "MAC",
       "category": "Software",
       "region": "Global",
       "stock": "In Stock",
-      "price": 3300,
-      "originalPrice": 3300,
-      "dealBadge": "Shared Account!",
+      "price": 1850,
+      "originalPrice": 1850,
+      "dealBadge": "HOT",
       "isDealOfTheWeek": false,
       "isOutOfStock": false,
       "highlightRegion": false,
@@ -581,20 +581,20 @@
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     },
     {
-      "id": 1777237645288,
-      "title": "Avast Premium Security MAC 1 Year",
-      "image": "images/Avast Premium Security 1 Device 1 Year Avast.jpg",
+      "id": 1777236973694,
+      "title": "HMA! Pro VPN Unlimited Devices 1 Year",
+      "image": "images/HMA! Pro VPN.jpg",
       "images": [
-        "images/Avast Premium Security 1 Device 1 Year Avast.jpg"
+        "images/HMA! Pro VPN.jpg"
       ],
-      "description": "1 Device\nGet it on your Personal Account!\nFor MAC!",
-      "platform": "MAC",
+      "description": "Works for Windows Only!",
+      "platform": "PC",
       "category": "Software",
       "region": "Global",
       "stock": "In Stock",
-      "price": 1850,
-      "originalPrice": 1850,
-      "dealBadge": "HOT",
+      "price": 5500,
+      "originalPrice": 5500,
+      "dealBadge": "Unlimited Accounts!",
       "isDealOfTheWeek": false,
       "isOutOfStock": false,
       "highlightRegion": false,
@@ -641,20 +641,20 @@
       "checkoutLink": "https://ig.me/m/whatagooddeal.dz"
     },
     {
-      "id": 1777236973694,
-      "title": "HMA! Pro VPN Unlimited Devices 1 Year",
+      "id": 1777237376290,
+      "title": "HMA! Pro VPN Shared Account 1 Year",
       "image": "images/HMA! Pro VPN.jpg",
       "images": [
         "images/HMA! Pro VPN.jpg"
       ],
-      "description": "Works for Windows Only!",
+      "description": "Get it cheaper on Shared account! \nWorks on Windows only!",
       "platform": "PC",
       "category": "Software",
       "region": "Global",
       "stock": "In Stock",
-      "price": 5500,
-      "originalPrice": 5500,
-      "dealBadge": "Unlimited Accounts!",
+      "price": 3300,
+      "originalPrice": 3300,
+      "dealBadge": "Shared Account!",
       "isDealOfTheWeek": false,
       "isOutOfStock": false,
       "highlightRegion": false,
