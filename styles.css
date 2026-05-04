@@ -38,37 +38,56 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--neon); }
 
-/* ============================================================
-   FIXED GLOBAL BACKGROUND (White Moon & Blue Sea)
-   ============================================================ */
-.global-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; }
-.global-bg-img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; filter: contrast(1.1) brightness(0.85); }
-.global-bg-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(3,9,20,0.2) 0%, rgba(3,9,20,0.6) 45%, rgba(3,9,20,0.98) 100%);
-}
 
 /* ============================================================
-   FIXED VISUAL COMPOSITION (Text + Bouncing Key)
+   FIXED BACKGROUND & VISUALS 
    ============================================================ */
-.fixed-visual-container {
-  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
-  display: flex; align-items: center; justify-content: center;
+/* This container is locked to the screen and never moves */
+.fixed-background-container {
+  position: fixed;
+  inset: 0;
+  z-index: -1; 
+  pointer-events: none; /* Allows clicks to pass through */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.hero-text-logo {
+
+.bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top; 
+  filter: contrast(1.1) brightness(0.85);
+  z-index: 1;
+}
+
+.bg-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(3,9,20,0.2) 0%, rgba(3,9,20,0.6) 45%, rgba(3,9,20,0.98) 100%);
+  z-index: 2;
+}
+
+.center-text-logo {
   position: absolute;
   width: clamp(280px, 60vw, 750px);
   opacity: 0.18;
   filter: drop-shadow(0 0 20px rgba(0,255,0,0.3));
+  z-index: 3;
 }
-.hero-key-bounce {
+
+.center-key-bounce {
   position: absolute;
   width: clamp(120px, 20vw, 250px);
   image-rendering: pixelated;
   filter: drop-shadow(0 15px 25px rgba(0,255,0,0.5)) drop-shadow(0 4px 10px rgba(0,0,0,0.9));
   animation: megaBounce 2s ease-in-out infinite;
+  z-index: 4;
 }
+
 @keyframes megaBounce {
   0%, 100% { transform: translateY(-10px); }
   50% { transform: translateY(-50px); }
