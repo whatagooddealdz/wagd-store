@@ -21,13 +21,12 @@
 </head>
 <body>
 
-  <!-- ░░ FIXED GLOBAL BACKGROUND ░░ -->
+  <!-- ░░ FIXED GLOBAL BACKGROUND (Moon & Night Sea) ░░ -->
   <div class="global-bg" aria-hidden="true">
     <img
-      src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=1920&q=85"
+      src="https://images.unsplash.com/photo-1513628253939-010e64ac66cd?auto=format&fit=crop&w=1920&q=80"
       alt=""
       class="global-bg-img"
-      onerror="this.closest('.global-bg').classList.add('global-bg-fallback')"
     />
     <div class="global-bg-overlay"></div>
   </div>
@@ -41,21 +40,13 @@
   <!-- ░░ STICKY HEADER ░░ -->
   <header class="site-header" id="site-header">
     <div class="header-inner">
-
       <a href="#" class="logo" aria-label="WAGD Home">
         <img src="images/logo.png" alt="WAGD Logo" class="header-logo-img" />
       </a>
 
       <div class="search-wrap">
         <span class="search-icon" aria-hidden="true">⌕</span>
-        <input
-          type="search"
-          id="search-input"
-          class="search-input"
-          placeholder="Search games..."
-          aria-label="Search games"
-          autocomplete="off"
-        />
+        <input type="search" id="search-input" class="search-input" placeholder="Search games..." aria-label="Search games" autocomplete="off" />
         <span id="search-clear" class="search-clear" aria-label="Clear search" role="button" tabindex="0">✕</span>
       </div>
 
@@ -82,10 +73,9 @@
   </header>
 
   <main>
-
     <!-- ░░ HERO ░░ -->
     <section class="hero" id="hero">
-
+      
       <!-- Stars particle layer -->
       <div class="hero-stars" aria-hidden="true">
         <div class="stars-layer s1"></div>
@@ -98,14 +88,12 @@
 
       <!-- Center composition: text logo + bouncing key -->
       <div class="hero-visual" aria-hidden="true">
-        <!-- WHAT A GOOD DEAL text backdrop -->
         <img
           src="images/writing for the site png (1).png"
           alt="What A Good Deal"
           class="hero-text-logo"
           onerror="this.style.display='none'"
         />
-        <!-- Pixel key bouncing above text -->
         <img
           src="images/logos png real.png"
           alt=""
@@ -148,7 +136,6 @@
           <span class="dotw-label">⚡ DEAL OF THE WEEK</span>
         </div>
         <div class="dotw-card" id="dotw-card">
-          <!-- Rendered by JS -->
           <div class="dotw-loading">Loading deal...</div>
         </div>
       </div>
@@ -198,7 +185,6 @@
           <button class="filter-btn" data-filter="Software">Software</button>
         </div>
 
-        <!-- Results count -->
         <p class="results-count" id="results-count" aria-live="polite"></p>
 
         <!-- Grid -->
@@ -219,7 +205,6 @@
         </div>
       </div>
     </section>
-
   </main>
 
   <!-- ░░ FOOTER ░░ -->
@@ -241,7 +226,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 WAGD — What A Good Deal! · Made with 💚 in Algeria</p>
+      <p>© 2026 WAGD — What A Good Deal! · Made with 💚 in Algeria</p>
     </div>
   </footer>
 
@@ -279,15 +264,12 @@
     }
     requestAnimationFrame(raf);
 
-    /* Tell GSAP ScrollTrigger about Lenis */
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
 
-    /* ── Register ScrollTrigger ── */
     gsap.registerPlugin(ScrollTrigger);
 
-    /* ── How It Works cards: stagger fade-up on scroll ── */
     gsap.fromTo(
       '.step-card',
       { opacity: 0, y: 60 },
@@ -305,8 +287,6 @@
       }
     );
 
-    /* ── Game catalog cards: stagger on scroll ── */
-    /* Re-fire whenever the grid re-renders (filters / search) */
     function animateCatalogCards() {
       const cards = document.querySelectorAll('.game-card');
       if (!cards.length) return;
@@ -328,7 +308,6 @@
       );
     }
 
-    /* Observe grid mutations so we can animate freshly rendered cards */
     const gridObserver = new MutationObserver(() => {
       ScrollTrigger.refresh();
       animateCatalogCards();
@@ -338,7 +317,6 @@
       gridObserver.observe(grid, { childList: true, subtree: false });
     }
 
-    /* ── Section titles fade-up ── */
     gsap.utils.toArray('.section-title').forEach((el) => {
       gsap.fromTo(
         el,
@@ -357,7 +335,6 @@
       );
     });
 
-    /* ── DOTW card reveal ── */
     gsap.fromTo(
       '.dotw-card',
       { opacity: 0, scale: 0.97 },
