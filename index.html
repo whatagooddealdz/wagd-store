@@ -21,6 +21,17 @@
 </head>
 <body>
 
+  <!-- ░░ FIXED GLOBAL BACKGROUND ░░ -->
+  <div class="global-bg" aria-hidden="true">
+    <img
+      src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=1920&q=85"
+      alt=""
+      class="global-bg-img"
+      onerror="this.closest('.global-bg').classList.add('global-bg-fallback')"
+    />
+    <div class="global-bg-overlay"></div>
+  </div>
+
   <!-- ░░ ANNOUNCEMENT BAR ░░ -->
   <div id="announcement-bar" class="announcement-bar" role="banner" aria-label="Site announcement">
     <span id="announcement-text">Loading...</span>
@@ -75,18 +86,6 @@
     <!-- ░░ HERO ░░ -->
     <section class="hero" id="hero">
 
-      <!-- Night sea / galaxy background image -->
-      <div class="hero-bg" aria-hidden="true">
-        <img
-          src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1920&q=80"
-          alt=""
-          class="hero-bg-img"
-          loading="eager"
-          onerror="this.closest('.hero-bg').classList.add('hero-bg-fallback')"
-        />
-        <div class="hero-bg-overlay"></div>
-      </div>
-
       <!-- Stars particle layer -->
       <div class="hero-stars" aria-hidden="true">
         <div class="stars-layer s1"></div>
@@ -108,7 +107,7 @@
         />
         <!-- Pixel key bouncing above text -->
         <img
-          src="images/key.png"
+          src="images/logos png real.png"
           alt=""
           class="hero-key-bounce"
           onerror="this.style.display='none'"
