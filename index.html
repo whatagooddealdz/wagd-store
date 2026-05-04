@@ -15,6 +15,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- Lenis smooth scroll -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lenis/1.1.13/lenis.min.js"></script>
 </head>
 <body>
 
@@ -71,8 +74,48 @@
 
     <!-- ░░ HERO ░░ -->
     <section class="hero" id="hero">
-      <div class="hero-grid-bg" aria-hidden="true"></div>
+
+      <!-- Night sea / galaxy background image -->
+      <div class="hero-bg" aria-hidden="true">
+        <img
+          src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1920&q=80"
+          alt=""
+          class="hero-bg-img"
+          loading="eager"
+          onerror="this.closest('.hero-bg').classList.add('hero-bg-fallback')"
+        />
+        <div class="hero-bg-overlay"></div>
+      </div>
+
+      <!-- Stars particle layer -->
+      <div class="hero-stars" aria-hidden="true">
+        <div class="stars-layer s1"></div>
+        <div class="stars-layer s2"></div>
+        <div class="stars-layer s3"></div>
+      </div>
+
+      <!-- Scanline -->
       <div class="scanline" aria-hidden="true"></div>
+
+      <!-- Center composition: text logo + bouncing key -->
+      <div class="hero-visual" aria-hidden="true">
+        <!-- WHAT A GOOD DEAL text backdrop -->
+        <img
+          src="images/writing for the site png (1).png"
+          alt="What A Good Deal"
+          class="hero-text-logo"
+          onerror="this.style.display='none'"
+        />
+        <!-- Pixel key bouncing above text -->
+        <img
+          src="images/key.png"
+          alt=""
+          class="hero-key-bounce"
+          onerror="this.style.display='none'"
+        />
+      </div>
+
+      <!-- Foreground text content -->
       <div class="hero-content">
         <p class="hero-eyebrow">🇩🇿 Algeria's #1 Game Key Store</p>
         <h1 class="hero-headline">
@@ -85,9 +128,17 @@
           <a href="#how-it-works" class="btn btn-ghost">How It Works</a>
         </div>
       </div>
+
+      <!-- Decorative corner brackets -->
       <div class="hero-deco" aria-hidden="true">
         <span class="deco-bracket deco-l">[</span>
         <span class="deco-bracket deco-r">]</span>
+      </div>
+
+      <!-- Scroll cue -->
+      <div class="hero-scroll-cue" aria-hidden="true">
+        <span class="scroll-line"></span>
+        <span class="scroll-label">scroll</span>
       </div>
     </section>
 
@@ -109,22 +160,22 @@
       <div class="section-container">
         <h2 class="section-title">How It Works</h2>
         <div class="steps-grid">
-          <div class="step-card">
+          <div class="step-card reveal-card">
             <span class="step-num">01</span>
             <h3 class="step-title">Pick Your Game</h3>
             <p class="step-desc">Browse the catalog and find the key you want. Check platform and region compatibility.</p>
           </div>
-          <div class="step-card">
+          <div class="step-card reveal-card">
             <span class="step-num">02</span>
             <h3 class="step-title">Place Your Order</h3>
             <p class="step-desc">Hit "Buy Now" — you'll either DM us on Instagram or fill a quick Google Form with your details.</p>
           </div>
-          <div class="step-card">
+          <div class="step-card reveal-card">
             <span class="step-num">03</span>
             <h3 class="step-title">Pay via CCP</h3>
             <p class="step-desc">Transfer payment to our CCP account. Upload your receipt as proof of payment.</p>
           </div>
-          <div class="step-card">
+          <div class="step-card reveal-card">
             <span class="step-num">04</span>
             <h3 class="step-title">Get Your Key</h3>
             <p class="step-desc">Once confirmed, we send your game key instantly. Activate and play. That's it! 🎮</p>
@@ -210,5 +261,119 @@
   </div>
 
   <script src="app.js"></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+    /* ── Lenis smooth scroll ── */
+    const lenis = new Lenis({
+      lerp: 0.08,
+      smoothWheel: true,
+      syncTouch: false,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    /* Tell GSAP ScrollTrigger about Lenis */
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+
+    /* ── Register ScrollTrigger ── */
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ── How It Works cards: stagger fade-up on scroll ── */
+    gsap.fromTo(
+      '.step-card',
+      { opacity: 0, y: 60 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        ease: 'power3.out',
+        stagger: 0.14,
+        scrollTrigger: {
+          trigger: '.steps-grid',
+          start: 'top 82%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+
+    /* ── Game catalog cards: stagger on scroll ── */
+    /* Re-fire whenever the grid re-renders (filters / search) */
+    function animateCatalogCards() {
+      const cards = document.querySelectorAll('.game-card');
+      if (!cards.length) return;
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.55,
+          ease: 'power2.out',
+          stagger: 0.07,
+          scrollTrigger: {
+            trigger: '.game-grid',
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    }
+
+    /* Observe grid mutations so we can animate freshly rendered cards */
+    const gridObserver = new MutationObserver(() => {
+      ScrollTrigger.refresh();
+      animateCatalogCards();
+    });
+    const grid = document.getElementById('game-grid');
+    if (grid) {
+      gridObserver.observe(grid, { childList: true, subtree: false });
+    }
+
+    /* ── Section titles fade-up ── */
+    gsap.utils.toArray('.section-title').forEach((el) => {
+      gsap.fromTo(
+        el,
+        { opacity: 0, x: -30 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    });
+
+    /* ── DOTW card reveal ── */
+    gsap.fromTo(
+      '.dotw-card',
+      { opacity: 0, scale: 0.97 },
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.7,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.dotw-section',
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+  </script>
 </body>
 </html>
