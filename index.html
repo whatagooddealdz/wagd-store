@@ -18,38 +18,45 @@
 </head>
 <body>
 
-  <!-- ░░ FIXED BACKGROUND & VISUALS ░░ -->
-  <!-- This entire section stays locked in place while the rest of the site scrolls -->
-  <div class="fixed-background-container" aria-hidden="true">
-    
-    <!-- Moon over sea image -->
+  <!-- ░░ FIXED GLOBAL BACKGROUND (Moon & Night Sea) ░░ -->
+  <div class="global-bg" aria-hidden="true">
     <img
-      src="https://images.unsplash.com/photo-1505506874110-6a7a4c9d2433?auto=format&fit=crop&q=80&w=1920"
+      src="https://images.unsplash.com/photo-1532767153582-b1a0e5145009?q=80&w=1920&auto=format&fit=crop"
       alt=""
-      class="bg-image"
+      class="global-bg-img"
     />
-    <div class="bg-gradient-overlay"></div>
+    <div class="global-bg-overlay"></div>
+  </div>
 
-    <!-- WHAT A GOOD DEAL Text -->
-    <img
-      src="images/writing for the site png (1).png"
-      alt="What A Good Deal"
-      class="center-text-logo"
-    />
-    
-    <!-- Bouncing Pixel Key -->
+  <!-- ░░ FIXED VISUAL COMPOSITION (Key stacked directly on Text) ░░ -->
+  <div class="fixed-visual-container" aria-hidden="true">
+    <!-- Key is placed first so it stacks on top visually in the column layout -->
     <img
       src="images/logos png real.png"
       alt="Pixel Key"
-      class="center-key-bounce"
+      class="hero-key-bounce"
+      onerror="this.style.display='none'"
     />
+    <img
+      src="images/writing for the site png (1).png"
+      alt="What A Good Deal"
+      class="hero-text-logo"
+      onerror="this.style.display='none'"
+    />
+  </div>
+
+  <!-- ░░ ANNOUNCEMENT BAR ░░ -->
+  <div id="announcement-bar" class="announcement-bar" role="banner">
+    <span id="announcement-text">Loading...</span>
+    <button id="dismiss-announcement" class="dismiss-btn" aria-label="Dismiss">✕</button>
   </div>
 
   <!-- ░░ STICKY HEADER ░░ -->
   <header class="site-header" id="site-header">
     <div class="header-inner">
       <a href="#" class="logo" aria-label="WAGD Home">
-        <img src="images/logo.png" alt="WAGD Logo" class="header-logo-img" />
+        <!-- Updated to your Symbol.png -->
+        <img src="images/Symbol.png" alt="WAGD Logo" class="header-logo-img" />
       </a>
       <div class="search-wrap">
         <span class="search-icon" aria-hidden="true">⌕</span>
@@ -72,15 +79,16 @@
     </div>
   </header>
 
-  <!-- ░░ ANNOUNCEMENT BAR ░░ -->
-  <div id="announcement-bar" class="announcement-bar" role="banner">
-    <span id="announcement-text">Loading...</span>
-    <button id="dismiss-announcement" class="dismiss-btn" aria-label="Dismiss">✕</button>
-  </div>
-
   <main>
     <!-- ░░ HERO ░░ -->
     <section class="hero" id="hero">
+      <div class="hero-stars" aria-hidden="true">
+        <div class="stars-layer s1"></div>
+        <div class="stars-layer s2"></div>
+        <div class="stars-layer s3"></div>
+      </div>
+      <div class="scanline" aria-hidden="true"></div>
+
       <div class="hero-content">
         <p class="hero-eyebrow">🇩🇿 Algeria's #1 Game Key Store</p>
         <h1 class="hero-headline">
