@@ -6,72 +6,60 @@
   <title>WAGD — What A Good Deal! | Game Keys in DZD</title>
   <meta name="description" content="Premium game keys at unbeatable DZD prices. Xbox, PlayStation, Steam & Indie titles. Pay via CCP. Order via DM or form." />
 
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/Symbol.png" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lenis/1.1.13/lenis.min.js"></script>
 </head>
 <body>
 
-  <!-- ░░ FIXED GLOBAL BACKGROUND (Moon & Night Sea) ░░ -->
-  <div class="global-bg" aria-hidden="true">
-    <img
-      src="https://images.unsplash.com/photo-1532767153582-b1a0e5145009?q=80&w=1920&auto=format&fit=crop"
-      alt=""
-      class="global-bg-img"
-    />
-    <div class="global-bg-overlay"></div>
-  </div>
-
-  <!-- ░░ FIXED VISUAL COMPOSITION (Key stacked directly on Text) ░░ -->
-  <div class="fixed-visual-container" aria-hidden="true">
-    <!-- Key is placed first so it stacks on top visually in the column layout -->
-    <img
-      src="images/logos png real.png"
-      alt="Pixel Key"
-      class="hero-key-bounce"
-      onerror="this.style.display='none'"
-    />
-    <img
-      src="images/writing for the site png (1).png"
-      alt="What A Good Deal"
-      class="hero-text-logo"
-      onerror="this.style.display='none'"
-    />
-  </div>
-
   <!-- ░░ ANNOUNCEMENT BAR ░░ -->
-  <div id="announcement-bar" class="announcement-bar" role="banner">
+  <div id="announcement-bar" class="announcement-bar" role="banner" aria-label="Site announcement">
     <span id="announcement-text">Loading...</span>
-    <button id="dismiss-announcement" class="dismiss-btn" aria-label="Dismiss">✕</button>
+    <button id="dismiss-announcement" class="dismiss-btn" aria-label="Dismiss announcement">✕</button>
   </div>
 
   <!-- ░░ STICKY HEADER ░░ -->
   <header class="site-header" id="site-header">
     <div class="header-inner">
+
       <a href="#" class="logo" aria-label="WAGD Home">
-        <!-- Updated to your Symbol.png -->
-        <img src="images/Symbol.png" alt="WAGD Logo" class="header-logo-img" />
+        <img src="images/logo.png" alt="WAGD Logo" class="header-logo-img" />
       </a>
+
       <div class="search-wrap">
         <span class="search-icon" aria-hidden="true">⌕</span>
-        <input type="search" id="search-input" class="search-input" placeholder="Search games..." aria-label="Search games" autocomplete="off" />
+        <input
+          type="search"
+          id="search-input"
+          class="search-input"
+          placeholder="Search games..."
+          aria-label="Search games"
+          autocomplete="off"
+        />
         <span id="search-clear" class="search-clear" aria-label="Clear search" role="button" tabindex="0">✕</span>
       </div>
+
       <nav class="header-nav">
         <a href="#catalog" class="nav-link">Catalog</a>
         <a href="#how-it-works" class="nav-link">How It Works</a>
-        <a id="ig-nav-link" href="#" class="nav-link ig-link" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a id="ig-nav-link" href="#" class="nav-link ig-link" target="_blank" rel="noopener noreferrer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+          Instagram
+        </a>
       </nav>
+
       <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
+
+    <!-- Mobile nav -->
     <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
       <a href="#catalog" class="mobile-nav-link">Catalog</a>
       <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
@@ -80,15 +68,11 @@
   </header>
 
   <main>
+
     <!-- ░░ HERO ░░ -->
     <section class="hero" id="hero">
-      <div class="hero-stars" aria-hidden="true">
-        <div class="stars-layer s1"></div>
-        <div class="stars-layer s2"></div>
-        <div class="stars-layer s3"></div>
-      </div>
+      <div class="hero-grid-bg" aria-hidden="true"></div>
       <div class="scanline" aria-hidden="true"></div>
-
       <div class="hero-content">
         <p class="hero-eyebrow">🇩🇿 Algeria's #1 Game Key Store</p>
         <h1 class="hero-headline">
@@ -101,9 +85,9 @@
           <a href="#how-it-works" class="btn btn-ghost">How It Works</a>
         </div>
       </div>
-      <div class="hero-scroll-cue" aria-hidden="true">
-        <span class="scroll-line"></span>
-        <span class="scroll-label">scroll</span>
+      <div class="hero-deco" aria-hidden="true">
+        <span class="deco-bracket deco-l">[</span>
+        <span class="deco-bracket deco-r">]</span>
       </div>
     </section>
 
@@ -114,6 +98,7 @@
           <span class="dotw-label">⚡ DEAL OF THE WEEK</span>
         </div>
         <div class="dotw-card" id="dotw-card">
+          <!-- Rendered by JS -->
           <div class="dotw-loading">Loading deal...</div>
         </div>
       </div>
@@ -152,7 +137,9 @@
     <section class="catalog-section" id="catalog">
       <div class="section-container">
         <h2 class="section-title">Game Catalog</h2>
-        <div class="filters" id="filters" role="group">
+
+        <!-- Filters -->
+        <div class="filters" id="filters" role="group" aria-label="Filter by platform">
           <button class="filter-btn active" data-filter="All">All</button>
           <button class="filter-btn" data-filter="Xbox">Xbox</button>
           <button class="filter-btn" data-filter="PlayStation">PlayStation</button>
@@ -160,12 +147,20 @@
           <button class="filter-btn" data-filter="Indie">Indie</button>
           <button class="filter-btn" data-filter="Software">Software</button>
         </div>
+
+        <!-- Results count -->
         <p class="results-count" id="results-count" aria-live="polite"></p>
+
+        <!-- Grid -->
         <div class="game-grid" id="game-grid" aria-label="Game catalog">
           <div class="grid-loading" id="grid-loading">
-            <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
+            <span class="loading-dot"></span>
+            <span class="loading-dot"></span>
+            <span class="loading-dot"></span>
           </div>
         </div>
+
+        <!-- Empty state -->
         <div class="empty-state" id="empty-state" hidden>
           <p class="empty-icon">🎮</p>
           <h3>No games found</h3>
@@ -174,8 +169,10 @@
         </div>
       </div>
     </section>
+
   </main>
 
+  <!-- ░░ FOOTER ░░ -->
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
@@ -194,53 +191,24 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2026 WAGD — What A Good Deal! · Made with 💚 in Algeria</p>
+      <p>© 2025 WAGD — What A Good Deal! · Made with 💚 in Algeria</p>
     </div>
   </footer>
 
+  <!-- ░░ TOOLTIP / TOAST ░░ -->
   <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  <!-- ░░ GAME DETAILS MODAL ░░ -->
   <div id="game-modal" class="modal" hidden aria-hidden="true">
     <div class="modal-backdrop" id="modal-backdrop"></div>
     <div class="modal-content">
       <button class="modal-close" id="modal-close" aria-label="Close modal">✕</button>
-      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-body" id="modal-body">
+        <!-- Injected via JS -->
+      </div>
     </div>
   </div>
 
   <script src="app.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-
-  <script>
-    const lenis = new Lenis({ lerp: 0.08, smoothWheel: true, syncTouch: false });
-    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-    requestAnimationFrame(raf);
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
-    gsap.registerPlugin(ScrollTrigger);
-
-    gsap.fromTo('.step-card', 
-      { opacity: 0, y: 60 }, 
-      { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.14, scrollTrigger: { trigger: '.steps-grid', start: 'top 85%' } }
-    );
-
-    function animateCatalogCards() {
-      const cards = document.querySelectorAll('.game-card');
-      if (!cards.length) return;
-      gsap.fromTo(cards, 
-        { opacity: 0, y: 50 }, 
-        { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out', stagger: 0.07, scrollTrigger: { trigger: '.game-grid', start: 'top 88%' } }
-      );
-    }
-    const gridObserver = new MutationObserver(() => { ScrollTrigger.refresh(); animateCatalogCards(); });
-    const grid = document.getElementById('game-grid');
-    if (grid) gridObserver.observe(grid, { childList: true, subtree: false });
-
-    gsap.utils.toArray('.section-title').forEach((el) => {
-      gsap.fromTo(el, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
-    });
-    gsap.fromTo('.dotw-card', { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.7, ease: 'power2.out', scrollTrigger: { trigger: '.dotw-section', start: 'top 85%' } });
-  </script>
 </body>
 </html>
