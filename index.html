@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
 
+  <!-- Make sure your SCSS compiler outputs to this file -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -69,25 +70,23 @@
 
   <main>
 
-    <!-- ░░ HERO ░░ -->
+    <!-- ░░ HERO (UPDATED WITH 3D CANVAS & IMAGES) ░░ -->
     <section class="hero" id="hero">
-      <div class="hero-grid-bg" aria-hidden="true"></div>
-      <div class="scanline" aria-hidden="true"></div>
+      <!-- New 3D Canvas Container -->
+      <div id="canvas-container"></div>
+
       <div class="hero-content">
-        <p class="hero-eyebrow">🇩🇿 Algeria's #1 Game Key Store</p>
-        <h1 class="hero-headline">
-          Premium Games.<br />
-          <span class="hero-highlight">Unbeatable DZD Prices.</span>
-        </h1>
+        <!-- Site Logo / Writing -->
+        <img src="images/writing for the site png (1).png" alt="What A Good Deal!" class="hero-writing-img" />
+
+        <!-- Neon Bouncing Key -->
+        <img src="images/Symbol.png" alt="WAGD Key" class="hero-bouncing-key" />
+
         <p class="hero-sub">Xbox · PlayStation · Steam · Indie<br />Instant keys. Pay via CCP. Zero hassle.</p>
         <div class="hero-ctas">
           <a href="#catalog" class="btn btn-primary">Browse Catalog ↓</a>
           <a href="#how-it-works" class="btn btn-ghost">How It Works</a>
         </div>
-      </div>
-      <div class="hero-deco" aria-hidden="true">
-        <span class="deco-bracket deco-l">[</span>
-        <span class="deco-bracket deco-r">]</span>
       </div>
     </section>
 
@@ -191,7 +190,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 WAGD — What A Good Deal! · Made with 💚 in Algeria</p>
+      <p>© 2026 WAGD — What A Good Deal! · Made with 💚 in Algeria</p>
     </div>
   </footer>
 
@@ -209,6 +208,9 @@
     </div>
   </div>
 
+  <!-- ░░ SCRIPTS ░░ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="celestial.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
