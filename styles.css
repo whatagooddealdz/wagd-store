@@ -42,55 +42,61 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 /* ============================================================
    FIXED BACKGROUND & VISUALS 
    ============================================================ */
-/* This container is locked to the screen and never moves */
-.fixed-background-container {
+.global-bg {
   position: fixed;
   inset: 0;
-  z-index: -1; 
-  pointer-events: none; /* Allows clicks to pass through */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: -2;
+  pointer-events: none;
 }
 
-.bg-image {
-  position: absolute;
-  inset: 0;
+.global-bg-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center top; 
-  filter: contrast(1.1) brightness(0.85);
-  z-index: 1;
 }
 
-.bg-gradient-overlay {
+.global-bg-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(3,9,20,0.2) 0%, rgba(3,9,20,0.6) 45%, rgba(3,9,20,0.98) 100%);
-  z-index: 2;
+  background: linear-gradient(to bottom, 
+    rgba(6,8,16,0.3) 0%, 
+    rgba(6,8,16,0.6) 40%, 
+    rgba(6,8,16,0.95) 100%);
 }
 
-.center-text-logo {
-  position: absolute;
-  width: clamp(280px, 60vw, 750px);
-  opacity: 0.18;
-  filter: drop-shadow(0 0 20px rgba(0,255,0,0.3));
-  z-index: 3;
+.fixed-visual-container {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column; /* Stack vertically */
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-5%); /* Shift slightly up overall */
 }
 
-.center-key-bounce {
-  position: absolute;
-  width: clamp(120px, 20vw, 250px);
+.hero-key-bounce {
+  width: clamp(120px, 25vw, 300px); 
   image-rendering: pixelated;
-  filter: drop-shadow(0 15px 25px rgba(0,255,0,0.5)) drop-shadow(0 4px 10px rgba(0,0,0,0.9));
-  animation: megaBounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 15px 35px rgba(0,255,0,0.6)) drop-shadow(0 5px 15px rgba(0,0,0,0.9));
+  animation: megaBounce 2.5s ease-in-out infinite; 
+  z-index: 5;
+  margin-bottom: -15px; /* Pulls key down over the text */
+}
+
+.hero-text-logo {
+  width: clamp(280px, 60vw, 750px); 
+  opacity: 0.18;
+  filter: brightness(1.5) drop-shadow(0 0 30px rgba(0,255,0,0.4));
   z-index: 4;
 }
 
 @keyframes megaBounce {
-  0%, 100% { transform: translateY(-10px); }
-  50% { transform: translateY(-50px); }
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-40px); } 
+  100% { transform: translateY(0); }
 }
 
 /* ============================================================
@@ -130,6 +136,13 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
    HERO
    ============================================================ */
 .hero { position: relative; height: 100vh; min-height: 640px; display: flex; align-items: center; justify-content: center; text-align: center; }
+
+.hero-stars { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.stars-layer { position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.9) 0%, transparent 100%), radial-gradient(1px 1px at 30% 8%, rgba(255,255,255,0.7) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 50% 22%, rgba(255,255,255,0.8) 0%, transparent 100%), radial-gradient(1px 1px at 60% 12%, rgba(0,255,0,0.4) 0%, transparent 100%); animation: starTwinkle 4s ease-in-out infinite alternate; }
+.s2 { background-image: radial-gradient(1px 1px at 25% 20%, rgba(255,255,255,0.6) 0%, transparent 100%), radial-gradient(1px 1px at 92% 12%, rgba(255,255,255,0.9) 0%, transparent 100%), radial-gradient(1px 1px at 72% 50%, rgba(0,255,0,0.3) 0%, transparent 100%); animation: starTwinkle 5.5s ease-in-out infinite alternate-reverse; }
+.s3 { background-image: radial-gradient(1.5px 1.5px at 18% 42%, rgba(255,255,255,0.6) 0%, transparent 100%), radial-gradient(1px 1px at 3% 22%, rgba(0,200,255,0.25) 0%, transparent 100%); animation: starTwinkle 7s ease-in-out infinite alternate; }
+.scanline { position: absolute; inset: 0; z-index: 2; background: repeating-linear-gradient(to bottom, transparent, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px); pointer-events: none; }
+
 .hero-content { position: relative; z-index: 4; max-width: 820px; padding: calc(var(--header-h) + var(--announce-h)) 24px 80px; display: flex; flex-direction: column; align-items: center; margin-top: auto; }
 .hero-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--neon); margin-bottom: 18px; animation: fadeUp 0.7s ease 0.2s forwards; opacity: 0; }
 .hero-headline { font-family: var(--font-display); font-size: clamp(52px, 9vw, 112px); font-weight: 700; line-height: 0.92; text-transform: uppercase; color: var(--white); margin-bottom: 24px; text-shadow: 0 4px 20px rgba(0,0,0,0.8); animation: fadeUp 0.7s ease 0.3s forwards; opacity: 0; }
@@ -156,8 +169,8 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 .dotw-inner { max-width: 1320px; margin: 0 auto; }
 .dotw-label-wrap { text-align: center; margin-bottom: 32px; }
 .dotw-label { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; background: var(--neon); color: #000; padding: 4px 16px; border-radius: var(--radius); }
-.dotw-card { display: flex; gap: 40px; align-items: center; background: var(--glass-bg); backdrop-filter: blur(var(--glass-blur)); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--glass-glow); transition: all 0.3s ease; }
-.dotw-card:hover { border-color: rgba(0,255,0,0.3); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,255,0,0.1) inset; }
+.dotw-card { display: flex; gap: 40px; align-items: center; background: var(--glass-bg); backdrop-filter: blur(var(--glass-blur)); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--glass-glow); transition: all 0.3s ease; cursor: pointer; }
+.dotw-card:hover { border-color: rgba(0,255,0,0.25); box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,255,0,0.1) inset; transform: translateY(-4px); }
 .dotw-img-wrap { width: 180px; flex-shrink: 0; border-radius: var(--radius); overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.5); aspect-ratio: 5/7; }
 .dotw-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
 .dotw-card:hover .dotw-img-wrap img { transform: scale(1.05); }
@@ -189,7 +202,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
 
 .game-card { background: var(--glass-bg); backdrop-filter: blur(var(--glass-blur)); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer; }
-.game-card:hover { border-color: rgba(0,255,0,0.3); transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,255,0,0.05) inset; }
+.game-card:hover { border-color: rgba(0,255,0,0.28); transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,255,0,0.05) inset; }
 .card-img-wrap { aspect-ratio: 5/7; overflow: hidden; background: #080c18; position: relative; }
 .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
 .game-card:hover .card-img-wrap img { transform: scale(1.08); }
