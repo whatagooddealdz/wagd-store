@@ -6,18 +6,39 @@
   <title>WAGD — What A Good Deal! | Game Keys in DZD</title>
   <meta name="description" content="Premium game keys at unbeatable DZD prices. Xbox, PlayStation, Steam & Indie titles. Pay via CCP. Order via DM or form." />
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/Symbol.png" />
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
 
-  <!-- Make sure your SCSS compiler outputs to this file -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
+  <!-- ░░ SVG FILTERS FOR LIQUID EFFECTS ░░ -->
+  <svg style="display:none;">
+    <defs>
+      <!-- Glass Button Filter -->
+      <filter id="container-glass" x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="1" seed="1" result="turbulence" />
+        <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
+        <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="70" xChannelSelector="R" yChannelSelector="B" result="displaced" />
+        <feGaussianBlur in="displaced" stdDeviation="4" result="finalBlur" />
+        <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+      </filter>
+      <!-- Cursor Gooey Filter -->
+      <filter id="liquid-cursor-filter">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+        <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ░░ LIQUID CURSOR CANVAS ░░ -->
+  <div id="cursor-wrapper">
+    <canvas id="cursor-canvas"></canvas>
+  </div>
 
   <!-- ░░ ANNOUNCEMENT BAR ░░ -->
   <div id="announcement-bar" class="announcement-bar" role="banner" aria-label="Site announcement">
@@ -28,30 +49,28 @@
   <!-- ░░ STICKY HEADER ░░ -->
   <header class="site-header" id="site-header">
     <div class="header-inner">
-
       <a href="#" class="logo" aria-label="WAGD Home">
         <img src="images/logo.png" alt="WAGD Logo" class="header-logo-img" />
       </a>
 
       <div class="search-wrap">
         <span class="search-icon" aria-hidden="true">⌕</span>
-        <input
-          type="search"
-          id="search-input"
-          class="search-input"
-          placeholder="Search games..."
-          aria-label="Search games"
-          autocomplete="off"
-        />
+        <input type="search" id="search-input" class="search-input" placeholder="Search games..." aria-label="Search games" autocomplete="off" />
         <span id="search-clear" class="search-clear" aria-label="Clear search" role="button" tabindex="0">✕</span>
       </div>
 
       <nav class="header-nav">
         <a href="#catalog" class="nav-link">Catalog</a>
         <a href="#how-it-works" class="nav-link">How It Works</a>
-        <a id="ig-nav-link" href="#" class="nav-link ig-link" target="_blank" rel="noopener noreferrer">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
-          Instagram
+        
+        <!-- LIQUID GLASS INSTAGRAM BUTTON -->
+        <a id="ig-nav-link" href="#" class="nav-link liquid-btn" target="_blank" rel="noopener noreferrer">
+          <div class="liquid-bg-layer"></div>
+          <div class="liquid-glass-layer"></div>
+          <div class="liquid-content">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+            Instagram
+          </div>
         </a>
       </nav>
 
@@ -59,36 +78,32 @@
         <span></span><span></span><span></span>
       </button>
     </div>
-
-    <!-- Mobile nav -->
-    <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
-      <a href="#catalog" class="mobile-nav-link">Catalog</a>
-      <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
-      <a id="ig-mobile-link" href="#" class="mobile-nav-link" target="_blank" rel="noopener noreferrer">Instagram</a>
-    </div>
   </header>
 
-  <main>
+  <!-- ░░ FIXED HERO BACKGROUND ░░ -->
+  <div class="hero-fixed-wrap">
+    <div id="canvas-container"></div>
+    <div class="hero-content">
+      <!-- Big Bouncing Key -->
+      <img src="images/Symbol.png" alt="WAGD Key" class="hero-bouncing-key" />
+      
+      <!-- Restored Big Text -->
+      <p class="hero-eyebrow">🇩🇿 Algeria's #1 Game Key Store</p>
+      <h1 class="hero-headline">
+        Premium Games.<br />
+        <span class="hero-highlight">Unbeatable DZD Prices.</span>
+      </h1>
 
-    <!-- ░░ HERO (UPDATED WITH 3D CANVAS & IMAGES) ░░ -->
-    <section class="hero" id="hero">
-      <!-- New 3D Canvas Container -->
-      <div id="canvas-container"></div>
-
-      <div class="hero-content">
-        <!-- Site Logo / Writing -->
-        <img src="images/writing for the site png (1).png" alt="What A Good Deal!" class="hero-writing-img" />
-
-        <!-- Neon Bouncing Key -->
-        <img src="images/Symbol.png" alt="WAGD Key" class="hero-bouncing-key" />
-
-        <p class="hero-sub">Xbox · PlayStation · Steam · Indie<br />Instant keys. Pay via CCP. Zero hassle.</p>
-        <div class="hero-ctas">
-          <a href="#catalog" class="btn btn-primary">Browse Catalog ↓</a>
-          <a href="#how-it-works" class="btn btn-ghost">How It Works</a>
-        </div>
+      <p class="hero-sub">Xbox · PlayStation · Steam · Indie<br />Instant keys. Pay via CCP. Zero hassle.</p>
+      <div class="hero-ctas">
+        <a href="#catalog" class="btn btn-primary">Browse Catalog ↓</a>
+        <a href="#how-it-works" class="btn btn-ghost">How It Works</a>
       </div>
-    </section>
+    </div>
+  </div>
+
+  <!-- ░░ SCROLLING MAIN CONTENT (Slides over the hero) ░░ -->
+  <main class="catalog-scroll-layer">
 
     <!-- ░░ DEAL OF THE WEEK ░░ -->
     <section class="dotw-section" id="deal-of-the-week">
@@ -97,7 +112,6 @@
           <span class="dotw-label">⚡ DEAL OF THE WEEK</span>
         </div>
         <div class="dotw-card" id="dotw-card">
-          <!-- Rendered by JS -->
           <div class="dotw-loading">Loading deal...</div>
         </div>
       </div>
@@ -137,7 +151,6 @@
       <div class="section-container">
         <h2 class="section-title">Game Catalog</h2>
 
-        <!-- Filters -->
         <div class="filters" id="filters" role="group" aria-label="Filter by platform">
           <button class="filter-btn active" data-filter="All">All</button>
           <button class="filter-btn" data-filter="Xbox">Xbox</button>
@@ -147,10 +160,8 @@
           <button class="filter-btn" data-filter="Software">Software</button>
         </div>
 
-        <!-- Results count -->
         <p class="results-count" id="results-count" aria-live="polite"></p>
 
-        <!-- Grid -->
         <div class="game-grid" id="game-grid" aria-label="Game catalog">
           <div class="grid-loading" id="grid-loading">
             <span class="loading-dot"></span>
@@ -159,7 +170,6 @@
           </div>
         </div>
 
-        <!-- Empty state -->
         <div class="empty-state" id="empty-state" hidden>
           <p class="empty-icon">🎮</p>
           <h3>No games found</h3>
@@ -169,48 +179,128 @@
       </div>
     </section>
 
+    <!-- ░░ FOOTER ░░ -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="images/writing for the site png (1).png" alt="WAGD" class="footer-logo-img" />
+          <p>What A Good Deal! — Algeria's premium game key store.<br />All keys are legitimate. All prices in DZD.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <a href="#catalog">Catalog</a>
+          <a href="#how-it-works">How It Works</a>
+          <a id="ig-footer-link" href="#" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </div>
+        <div class="footer-notice">
+          <h4>Payment Info</h4>
+          <p>We accept <strong>CCP (Algeria Post)</strong> payments only. Orders processed manually after receipt verification. Keys delivered within 24h.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 WAGD — What A Good Deal! · Made with 💚 in Algeria</p>
+      </div>
+    </footer>
   </main>
 
-  <!-- ░░ FOOTER ░░ -->
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <img src="images/writing for the site png (1).png" alt="WAGD" class="footer-logo-img" />
-        <p>What A Good Deal! — Algeria's premium game key store.<br />All keys are legitimate. All prices in DZD.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Quick Links</h4>
-        <a href="#catalog">Catalog</a>
-        <a href="#how-it-works">How It Works</a>
-        <a id="ig-footer-link" href="#" target="_blank" rel="noopener noreferrer">Instagram</a>
-      </div>
-      <div class="footer-notice">
-        <h4>Payment Info</h4>
-        <p>We accept <strong>CCP (Algeria Post)</strong> payments only. Orders processed manually after receipt verification. Keys delivered within 24h.</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 WAGD — What A Good Deal! · Made with 💚 in Algeria</p>
-    </div>
-  </footer>
-
-  <!-- ░░ TOOLTIP / TOAST ░░ -->
   <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
 
-  <!-- ░░ GAME DETAILS MODAL ░░ -->
   <div id="game-modal" class="modal" hidden aria-hidden="true">
     <div class="modal-backdrop" id="modal-backdrop"></div>
     <div class="modal-content">
       <button class="modal-close" id="modal-close" aria-label="Close modal">✕</button>
-      <div class="modal-body" id="modal-body">
-        <!-- Injected via JS -->
-      </div>
+      <div class="modal-body" id="modal-body"></div>
     </div>
   </div>
 
   <!-- ░░ SCRIPTS ░░ -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="celestial.js"></script>
+  
+  <!-- Liquid Cursor Logic -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const canvas = document.getElementById("cursor-canvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      
+      let points = [];
+      let mouse = { x: 0, y: 0, lastX: 0, lastY: 0, moved: false };
+      const COLORS = ["#FF0080", "#7928CA", "#0070F3", "#00DFD8", "#FF4D4D", "#FFD700"];
+
+      const resize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
+      window.addEventListener("resize", resize);
+      resize();
+
+      window.addEventListener("mousemove", (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.moved = true;
+      });
+
+      const addPoint = (x, y) => {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 0.5;
+        const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        points.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          radius: Math.random() * 20 + 10,
+          color,
+        });
+      };
+
+      const animate = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (mouse.moved) {
+          const dist = Math.hypot(mouse.x - mouse.lastX, mouse.y - mouse.lastY);
+          if (dist > 0) {
+            const steps = Math.min(dist, 20);
+            for (let i = 0; i < steps; i += 2) {
+              const t = i / steps;
+              const x = mouse.lastX + (mouse.x - mouse.lastX) * t;
+              const y = mouse.lastY + (mouse.y - mouse.lastY) * t;
+              if (Math.random() > 0.5) addPoint(x, y);
+            }
+          }
+          mouse.lastX = mouse.x;
+          mouse.lastY = mouse.y;
+          mouse.moved = false;
+        } else {
+          mouse.lastX = mouse.x;
+          mouse.lastY = mouse.y;
+        }
+
+        for (let i = points.length - 1; i >= 0; i--) {
+          const p = points[i];
+          p.life -= 0.01;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.radius *= 0.99;
+
+          if (p.life <= 0 || p.radius < 0.5) {
+            points.splice(i, 1);
+            continue;
+          }
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.life;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+        requestAnimationFrame(animate);
+      };
+      animate();
+    });
+  </script>
+  
   <script src="app.js"></script>
 </body>
 </html>
